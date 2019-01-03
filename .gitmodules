@@ -1,0 +1,3 @@
+[submodule ".libioc"]
+	path = .libioc
+	url = https://github.com/bsdci/libioc
