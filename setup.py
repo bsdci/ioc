@@ -36,7 +36,7 @@ except ModuleNotFoundError:
 def _read_requirements(
     filename: str="requirements.txt"
 ) -> typing.Dict[str, typing.List[str]]:
-    reqs = list(parse_requirements(filename, session="ioc"))
+    reqs = list(parse_requirements(filename, session="ioc_cli"))
     return dict(
         install_requires=list(map(lambda x: f"{x.name}{x.specifier}", reqs)),
         dependency_links=list(map(
@@ -80,7 +80,7 @@ if sys.version_info < (3, 6):
     exit("Only Python 3.6 and higher is supported.")
 
 setup(
-    name='ioc',
+    name='ioc_cli',
     license='BSD',
     version='0.4.0',
     description='A Python library to manage jails with iocage',
