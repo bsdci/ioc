@@ -1,2 +1,2 @@
-ucl==0.8.0
-gitpython
+click==6.7
+texttable==1.2.1

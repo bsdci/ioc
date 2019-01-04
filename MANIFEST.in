@@ -1,6 +1,0 @@
-include requirements.txt
-include LICENSE.txt
-include *.md
-include Makefile
-include *.py
-recursive-include iocage *.py
