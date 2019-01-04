@@ -1,5 +1,5 @@
+# Copyright (c) 2017-2019, Stefan Grönke
 # Copyright (c) 2014-2018, iocage
-# Copyright (c) 2017-2018, Stefan Grönke
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -26,12 +26,12 @@
 import typing
 import click
 
-import iocage.errors
-import iocage.events
-import iocage.Jails
-import iocage.Logger
+import ioc.errors
+import ioc.events
+import ioc.Jails
+import ioc.Logger
 
-from .shared.click import IocageClickContext
+from .shared.click import IocClickContext
 
 __rootcmd__ = True
 
@@ -54,7 +54,7 @@ __rootcmd__ = True
 )
 @click.argument("jails", nargs=-1)
 def cli(
-    ctx: IocageClickContext,
+    ctx: IocClickContext,
     shutdown: bool,
     force: bool,
     jails: typing.Tuple[str, ...]
@@ -71,7 +71,7 @@ def cli(
         logger.error("No jail selector provided")
         exit(1)
 
-    ioc_jails = iocage.Jails.JailsGenerator(
+    ioc_jails = ioc.Jails.JailsGenerator(
         host=ctx.parent.host,
         zfs=ctx.parent.zfs,
         logger=logger,

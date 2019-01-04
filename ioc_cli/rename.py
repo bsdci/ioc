@@ -1,5 +1,5 @@
+# Copyright (c) 2017-2019, Stefan Grönke
 # Copyright (c) 2014-2018, iocage
-# Copyright (c) 2017-2018, Stefan Grönke
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -25,9 +25,9 @@
 """Rename a jail."""
 import click
 
-import iocage.Jail
+import ioc.Jail
 
-from .shared.click import IocageClickContext
+from .shared.click import IocClickContext
 
 __rootcmd__ = True
 
@@ -37,7 +37,7 @@ __rootcmd__ = True
 @click.argument("jail", nargs=1)
 @click.argument("name", nargs=1)
 def cli(
-    ctx: IocageClickContext,
+    ctx: IocClickContext,
     jail: str,
     name: str
 ) -> None:
@@ -46,13 +46,13 @@ def cli(
     print_function = ctx.parent.print_events
 
     try:
-        ioc_jail = iocage.Jail.Jail(
+        ioc_jail = ioc.Jail.Jail(
             jail,
             logger=logger,
             zfs=ctx.parent.zfs,
             host=ctx.parent.host
         )
         print_function(ioc_jail.rename(name))
-    except iocage.errors.IocageException:
+    except ioc.errors.IocageException:
         exit(1)
 

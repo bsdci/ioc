@@ -8,10 +8,9 @@
 # BEFORE:  securelevel
 # KEYWORD: shutdown
 
-# Add the following lines to /etc/rc.conf to enable ioc (libiocage experiments):
+# Add the following lines to /etc/rc.conf to enable ioc start on boot:
 #
 # ioc_enable="YES"
-#
 #
 
 . /etc/rc.subr
@@ -35,7 +34,7 @@ export LANG=$ioc_lang
 ioc_start()
 {
     if checkyesno ${rcvar}; then
-        echo "* [iocage] starting jails... "
+        echo "* [ioc] starting jails... "
         /usr/local/bin/ioc start --rc
     fi
 }
@@ -43,7 +42,7 @@ ioc_start()
 ioc_stop()
 {
     if checkyesno ${rcvar}; then
-        echo "* [iocage] stopping jails... "
+        echo "* [ioc] stopping jails... "
         /usr/local/bin/ioc stop --rc
     fi
 }
@@ -51,7 +50,7 @@ ioc_stop()
 ioc_status()
 {
     if checkyesno ${rcvar}; then
-        echo -n "* [iocage] checking jails status..."
+        echo -n "* [ioc] checking jails status..."
 	test -z "$(/usr/local/bin/ioc list boot=yes running=no template=no,- --no-header --output=name --output-format=list)"
 	status=$?
 	if test ${status} -eq 0; then

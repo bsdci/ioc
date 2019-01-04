@@ -1,5 +1,5 @@
+# Copyright (c) 2017-2019, Stefan Grönke
 # Copyright (c) 2014-2018, iocage
-# Copyright (c) 2017-2018, Stefan Grönke
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -32,16 +32,16 @@ import sys
 
 import click
 
-from iocage.Logger import Logger
-from iocage.events import IocageEvent
-from iocage.errors import (
+from ioc.Logger import Logger
+from ioc.events import IocageEvent
+from ioc.errors import (
     InvalidLogLevel,
     IocageNotActivated,
     ZFSSourceMountpoint
 )
-from iocage.ZFS import get_zfs
-from iocage.Datasets import Datasets
-from iocage.Host import HostGenerator
+from ioc.ZFS import get_zfs
+from ioc.Datasets import Datasets
+from ioc.Host import HostGenerator
 
 logger = Logger()
 
@@ -67,7 +67,7 @@ try:
     )
 except subprocess.CalledProcessError:
     logger.error(
-        "ZFS is required to use iocage.\n"
+        "ZFS is required to use ioc.\n"
         "Try calling 'kldload zfs' as root."
     )
     exit(1)
@@ -152,7 +152,7 @@ class IOCageCLI(click.MultiCommand):
     def get_command(self, ctx, name):
         ctx.print_events = print_events
         try:
-            mod = __import__(f"ioc.{name}", None, None, ["ioc"])
+            mod = __import__(f"ioc_cli.{name}", None, None, ["ioc"])
 
             try:
                 if mod.__rootcmd__ and "--help" not in sys.argv[1:]:
@@ -188,7 +188,7 @@ class IOCageCLI(click.MultiCommand):
     help="Globally override the activated iocage dataset(s)"
 )
 @click.command(cls=IOCageCLI)
-@click.version_option(version="0.3.2 2018/12/16", prog_name="ioc")
+@click.version_option(version="0.4.0 2019/01/04", prog_name="ioc")
 @click.pass_context
 def cli(ctx, log_level: str, source: set) -> None:
     """A jail manager."""

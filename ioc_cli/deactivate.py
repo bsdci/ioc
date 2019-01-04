@@ -1,5 +1,5 @@
+# Copyright (c) 2017-2019, Stefan Grönke
 # Copyright (c) 2014-2018, iocage
-# Copyright (c) 2017-2018, Stefan Grönke
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -25,15 +25,15 @@
 """Deactivate ZFS pools for iocage with the CLI."""
 import click
 
-import iocage.errors
-import iocage.Datasets
-import iocage.Logger
-import iocage.ZFS
+import ioc.errors
+import ioc.Datasets
+import ioc.Logger
+import ioc.ZFS
 
 __rootcmd__ = True
 
 
-@click.command(name="deactivate", help="Disable a ZFS pool for iocage.")
+@click.command(name="deactivate", help="Disable a ZFS pool for ioc.")
 @click.pass_context
 @click.argument("zpool")
 def cli(ctx, zpool):
@@ -48,7 +48,7 @@ def cli(ctx, zpool):
         exit(1)
 
     try:
-        datasets = iocage.Datasets.Datasets(
+        datasets = ioc.Datasets.Datasets(
             zfs=zfs,
             logger=logger
         )
@@ -58,5 +58,5 @@ def cli(ctx, zpool):
             logger.log(f"ZFS pool '{zpool}' deactivated")
         else:
             logger.warn(f"ZFS pool '{zpool}' is not active")
-    except iocage.errors.IocageException:
+    except ioc.errors.IocageException:
         exit(1)

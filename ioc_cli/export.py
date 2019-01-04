@@ -1,5 +1,5 @@
+# Copyright (c) 2017-2019, Stefan Grönke
 # Copyright (c) 2014-2018, iocage
-# Copyright (c) 2017-2018, Stefan Grönke
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -26,15 +26,15 @@
 import click
 import os.path
 
-import iocage.errors
-import iocage.Filter
-import iocage.Jail
-import iocage.Jails
-import iocage.Logger
-import iocage.Releases
-import iocage.Resource
+import ioc.errors
+import ioc.Filter
+import ioc.Jail
+import ioc.Jails
+import ioc.Logger
+import ioc.Releases
+import ioc.Resource
 
-from .shared.click import IocageClickContext
+from .shared.click import IocClickContext
 
 __rootcmd__ = True
 
@@ -56,7 +56,7 @@ __rootcmd__ = True
 #     help="Include ZFS snapshots. Implies --standalone"
 # )
 def cli(
-    ctx: IocageClickContext,
+    ctx: IocClickContext,
     jail: str,
     destination: str,
     standalone: bool
@@ -68,14 +68,14 @@ def cli(
     as the destination path.
     """
     logger = ctx.parent.logger
-    zfs: iocage.ZFS.ZFS = ctx.parent.zfs
-    host: iocage.Host.HostGenerator = ctx.parent.host
+    zfs: ioc.ZFS.ZFS = ctx.parent.zfs
+    host: ioc.Host.HostGenerator = ctx.parent.host
     print_events = ctx.parent.print_events
 
     # Recursive exports cannot be imported at the current time
     recursive = False
 
-    ioc_jail = iocage.Jail.JailGenerator(
+    ioc_jail = ioc.Jail.JailGenerator(
         jail,
         logger=logger,
         zfs=zfs,
@@ -92,5 +92,5 @@ def cli(
             standalone=standalone,
             recursive=recursive
         ))
-    except iocage.errors.IocageException:
+    except ioc.errors.IocageException:
         exit(1)

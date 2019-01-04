@@ -1,5 +1,5 @@
+# Copyright (c) 2017-2019, Stefan Grönke
 # Copyright (c) 2014-2018, iocage
-# Copyright (c) 2017-2018, Stefan Grönke
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -26,15 +26,15 @@
 import click
 import typing
 
-import iocage.errors
-import iocage.Filter
-import iocage.Jail
-import iocage.Jails
-import iocage.Logger
-import iocage.Releases
-import iocage.Resource
+import ioc.errors
+import ioc.Filter
+import ioc.Jail
+import ioc.Jails
+import ioc.Logger
+import ioc.Releases
+import ioc.Resource
 
-from .shared.click import IocageClickContext
+from .shared.click import IocClickContext
 
 __rootcmd__ = True
 
@@ -59,7 +59,7 @@ __rootcmd__ = True
               help="Bypass the children prompt, best used with --force (-f).")
 @click.argument("filters", nargs=-1)
 def cli(
-    ctx: IocageClickContext,
+    ctx: IocClickContext,
     force: bool,
     dataset_type: typing.Optional[str],
     recursive: bool,
@@ -86,13 +86,13 @@ def cli(
     release = (dataset_type == "release") is True
 
     resources_class: typing.Union[
-        typing.Type[iocage.Releases.ReleasesGenerator],
-        typing.Type[iocage.Jails.JailsGenerator]
+        typing.Type[ioc.Releases.ReleasesGenerator],
+        typing.Type[ioc.Jails.JailsGenerator]
     ]
     if release is True:
-        resources_class = iocage.Releases.ReleasesGenerator
+        resources_class = ioc.Releases.ReleasesGenerator
     else:
-        resources_class = iocage.Jails.JailsGenerator
+        resources_class = ioc.Jails.JailsGenerator
 
     resources = list(resources_class(
         filters=filters,
@@ -125,7 +125,7 @@ def cli(
         try:
             ctx.parent.print_events(item.destroy())
             logger.screen(f"{old_mountpoint} destroyed")
-        except iocage.errors.IocageException:
+        except ioc.errors.IocageException:
             failed_items.append(item)
 
     if len(failed_items) > 0:

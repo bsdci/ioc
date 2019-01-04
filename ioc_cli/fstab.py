@@ -1,5 +1,5 @@
+# Copyright (c) 2017-2019, Stefan Grönke
 # Copyright (c) 2014-2018, iocage
-# Copyright (c) 2017-2018, Stefan Grönke
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -28,28 +28,28 @@ import errno
 import click
 import os
 
-import iocage.errors
-import iocage.Logger
-import iocage.Host
-import iocage.helpers
-import iocage.Jail
-import iocage.Config.Jail.File.Fstab
+import ioc.errors
+import ioc.Logger
+import ioc.Host
+import ioc.helpers
+import ioc.Jail
+import ioc.Config.Jail.File.Fstab
 
 from .shared.jail import get_jail
-from .shared.click import IocageClickContext
+from .shared.click import IocClickContext
 
 __rootcmd__ = True
-FstabLine = iocage.Config.Jail.File.Fstab.FstabLine
+FstabLine = ioc.Config.Jail.File.Fstab.FstabLine
 
 
-def _get_relpath(path: str, jail: iocage.Jail.JailGenerator) -> str:
+def _get_relpath(path: str, jail: ioc.Jail.JailGenerator) -> str:
     if path.startswith(jail.root_path) is True:
         return path[len(jail.root_path.rstrip("/")):]
     else:
         return path
 
 
-def _get_abspath(path: str, jail: iocage.Jail.JailGenerator) -> str:
+def _get_abspath(path: str, jail: ioc.Jail.JailGenerator) -> str:
     result = str(os.path.realpath(os.path.join(
         jail.root_path,
         _get_relpath(path, jail).lstrip("/")
@@ -58,7 +58,7 @@ def _get_abspath(path: str, jail: iocage.Jail.JailGenerator) -> str:
     if result.startswith(jail.root_path):
         return result
 
-    raise iocage.errors.InsecureJailPath(
+    raise ioc.errors.InsecureJailPath(
         path=result,
         logger=jail.logger
     )
@@ -81,7 +81,7 @@ def _get_abspath(path: str, jail: iocage.Jail.JailGenerator) -> str:
 @click.argument("jail", nargs=1, required=True)
 @click.option("--read-write", "-rw", is_flag=True, default=False)
 def cli_add(
-    ctx: IocageClickContext,
+    ctx: IocClickContext,
     source: str,
     destination: typing.Tuple[str],
     jail: str,
@@ -137,7 +137,7 @@ def cli_add(
             f"fstab mount added: {source} -> {desination_path} ({mount_opts})"
         )
         exit(0)
-    except iocage.errors.IocageException:
+    except ioc.errors.IocageException:
         exit(1)
 
 
@@ -146,7 +146,7 @@ def cli_add(
 )
 @click.pass_context
 @click.argument("jail", nargs=1, required=True)
-def cli_show(ctx: IocageClickContext, jail: str) -> None:
+def cli_show(ctx: IocClickContext, jail: str) -> None:
     """Show a jails fstab file."""
     ioc_jail = get_jail(jail, ctx.parent)
     if os.path.isfile(ioc_jail.fstab.path):
@@ -164,7 +164,7 @@ def cli_show(ctx: IocageClickContext, jail: str) -> None:
 )
 @click.argument("jail", nargs=1, required=True)
 @click.pass_context
-def cli_rm(ctx: IocageClickContext, source: str, jail: str) -> None:
+def cli_rm(ctx: IocClickContext, source: str, jail: str) -> None:
     """Remove a line from a jails fstab file."""
     ioc_jail = get_jail(jail, ctx.parent)
     fstab = ioc_jail.fstab
@@ -182,7 +182,7 @@ def cli_rm(ctx: IocageClickContext, source: str, jail: str) -> None:
                 del fstab[i - 1]
                 fstab.save()
                 break
-    except iocage.errors.IocageException:
+    except ioc.errors.IocageException:
         exit(1)
 
     if destination is None:
@@ -233,7 +233,7 @@ class FstabCli(click.MultiCommand):
 )
 @click.pass_context
 def cli(
-    ctx: IocageClickContext
+    ctx: IocClickContext
 ) -> None:
     """View and manipulate a jails fstab file."""
     ctx.logger = ctx.parent.logger

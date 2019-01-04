@@ -1,5 +1,5 @@
+# Copyright (c) 2017-2019, Stefan Grönke
 # Copyright (c) 2014-2018, iocage
-# Copyright (c) 2017-2018, Stefan Grönke
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -26,11 +26,11 @@
 import typing
 import click
 
-import iocage.errors
-import iocage.Jails
-import iocage.Logger
+import ioc.errors
+import ioc.Jails
+import ioc.Logger
 
-from .shared.click import IocageClickContext
+from .shared.click import IocClickContext
 from .shared.jail import set_properties
 
 __rootcmd__ = True
@@ -46,7 +46,7 @@ __rootcmd__ = True
     help="Temporarily override jail config options"
 )
 def cli(
-    ctx: IocageClickContext,
+    ctx: IocClickContext,
     jails: typing.Tuple[str, ...],
     temporary_config_override: typing.Tuple[str, ...]
 ) -> None:
@@ -70,16 +70,16 @@ def cli(
 def _provision(
     filters: typing.Tuple[str, ...],
     temporary_config_override: typing.Tuple[str, ...],
-    zfs: iocage.ZFS.ZFS,
-    host: iocage.Host.HostGenerator,
-    logger: iocage.Logger.Logger,
+    zfs: ioc.ZFS.ZFS,
+    host: ioc.Host.HostGenerator,
+    logger: ioc.Logger.Logger,
     print_function: typing.Callable[
-        [typing.Generator[iocage.events.IocageEvent, None, None]],
+        [typing.Generator[ioc.events.IocageEvent, None, None]],
         None
     ]
 ) -> bool:
 
-    jails = iocage.Jails.JailsGenerator(
+    jails = ioc.Jails.JailsGenerator(
         logger=logger,
         zfs=zfs,
         host=host,
@@ -94,12 +94,12 @@ def _provision(
                 properties=temporary_config_override,
                 target=jail
             )
-        except iocage.errors.IocageException:
+        except ioc.errors.IocageException:
             exit(1)
 
         try:
             print_function(_execute_provisioner(jail))
-        except iocage.errors.IocageException:
+        except ioc.errors.IocageException:
             failed_jails.append(jail)
             continue
 
@@ -117,10 +117,10 @@ def _provision(
 
 
 def _execute_provisioner(
-    jail: 'iocage.Jail.JailsGenerator'
-) -> typing.Generator['iocage.events.IocageEvent', None, None]:
+    jail: 'ioc.Jail.JailsGenerator'
+) -> typing.Generator['ioc.events.IocageEvent', None, None]:
     for event in jail.provisioner.provision():
         yield event
-        if isinstance(event, iocage.events.JailCommandExecution):
+        if isinstance(event, ioc.events.JailCommandExecution):
             if event.done is True:
                 print(event.stdout)

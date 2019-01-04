@@ -1,5 +1,5 @@
+# Copyright (c) 2017-2019, Stefan Grönke
 # Copyright (c) 2014-2018, iocage
-# Copyright (c) 2017-2018, Stefan Grönke
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -26,12 +26,12 @@
 import typing
 import click
 
-import iocage.Jail
-import iocage.Pkg
-import iocage.Logger
-import iocage.errors
+import ioc.Jail
+import ioc.Pkg
+import ioc.Logger
+import ioc.errors
 
-from .shared.click import IocageClickContext
+from .shared.click import IocClickContext
 
 
 @click.command(name="pkg", help="Manage packages in a jail.")
@@ -46,7 +46,7 @@ from .shared.click import IocageClickContext
 @click.argument("jail")
 @click.argument("packages", nargs=-1)
 def cli(
-    ctx: IocageClickContext,
+    ctx: IocClickContext,
     remove: bool,
     jail: str,
     packages: typing.Tuple[str, ...]
@@ -55,17 +55,17 @@ def cli(
     logger = ctx.parent.logger
 
     try:
-        ioc_jail = iocage.Jail.JailGenerator(
+        ioc_jail = ioc.Jail.JailGenerator(
             jail,
             logger=logger,
             zfs=ctx.parent.zfs,
             host=ctx.parent.host
         )
-    except iocage.errors.JailNotFound:
+    except ioc.errors.JailNotFound:
         exit(1)
 
     try:
-        pkg = iocage.Pkg.Pkg(
+        pkg = ioc.Pkg.Pkg(
             logger=logger,
             zfs=ctx.parent.zfs,
             host=ctx.parent.host
@@ -81,6 +81,6 @@ def cli(
                 packages=list(packages)
             )
         ctx.parent.print_events(events)
-    except iocage.errors.IocageException:
+    except ioc.errors.IocageException:
         exit(1)
 

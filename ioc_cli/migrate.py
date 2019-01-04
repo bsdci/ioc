@@ -25,43 +25,43 @@
 import typing
 import click
 
-import iocage.events
-import iocage.errors
-import iocage.helpers
-import iocage.Jails
-import iocage.Logger
+import ioc.events
+import ioc.errors
+import ioc.helpers
+import ioc.Jails
+import ioc.Logger
 
-from .shared.click import IocageClickContext
+from .shared.click import IocClickContext
 
 __rootcmd__ = True
 
 
-class JailMigrationEvent(iocage.events.IocageEvent):
+class JailMigrationEvent(ioc.events.IocageEvent):
     """CLI event that occurs when a jail is migrated from legacy format."""
 
     def __init__(
         self,
-        jail: 'iocage.Jail.JailGenerator'
+        jail: 'ioc.Jail.JailGenerator'
     ) -> None:
         self.identifier = jail.full_name
-        iocage.events.IocageEvent.__init__(self)
+        ioc.events.IocageEvent.__init__(self)
 
 
 @click.command(name="migrate", help="Migrate jails to the latest format.")
 @click.pass_context
 @click.argument("jails", nargs=-1)
 def cli(
-    ctx: IocageClickContext,
+    ctx: IocClickContext,
     jails: typing.Tuple[str, ...]
 ) -> None:
     """Start one or many jails."""
     logger = ctx.parent.logger
-    zfs = iocage.ZFS.get_zfs(logger=logger)
-    host = iocage.Host.HostGenerator(logger=logger, zfs=zfs)
+    zfs = ioc.ZFS.get_zfs(logger=logger)
+    host = ioc.Host.HostGenerator(logger=logger, zfs=zfs)
 
     filters = jails + ("template=no,-",)
 
-    ioc_jails = iocage.Jails.JailsGenerator(
+    ioc_jails = ioc.Jails.JailsGenerator(
         filters,
         logger=logger,
         host=host,
@@ -81,11 +81,11 @@ def cli(
 
 
 def _migrate_jails(
-    jails: 'iocage.Jails.JailsGenerator',
-    logger: 'iocage.Logger.Logger',
-    host: 'iocage.Host.HostGenerator',
-    zfs: 'iocage.ZFS.ZFS'
-) -> typing.Generator['iocage.events.IocageEvent', None, None]:
+    jails: 'ioc.Jails.JailsGenerator',
+    logger: 'ioc.Logger.Logger',
+    host: 'ioc.Host.HostGenerator',
+    zfs: 'ioc.ZFS.ZFS'
+) -> typing.Generator['ioc.events.IocageEvent', None, None]:
 
     for jail in jails:
 
@@ -97,13 +97,13 @@ def _migrate_jails(
             continue
 
         if jail.running is True:
-            yield event.fail(iocage.errors.JailAlreadyRunning(
+            yield event.fail(ioc.errors.JailAlreadyRunning(
                 jail=jail,
                 logger=logger
             ))
             continue
 
-        if iocage.helpers.validate_name(jail.config["tag"]):
+        if ioc.helpers.validate_name(jail.config["tag"]):
             name = jail.config["tag"]
             temporary_name = name
         else:
@@ -111,7 +111,7 @@ def _migrate_jails(
             temporary_name = "import-" + str(hash(name) % (1 << 32))
 
         try:
-            new_jail = iocage.Jail.JailGenerator(
+            new_jail = ioc.Jail.JailGenerator(
                 dict(name=temporary_name),
                 root_datasets_name=jail.root_datasets_name,
                 new=True,
@@ -120,13 +120,13 @@ def _migrate_jails(
                 host=host
             )
             if new_jail.exists is True:
-                raise iocage.errors.JailAlreadyExists(
+                raise ioc.errors.JailAlreadyExists(
                     jail=new_jail,
                     logger=logger
                 )
 
             def _destroy_unclean_migration() -> typing.Generator[
-                'iocage.events.IocageEvents',
+                'ioc.events.IocageEvents',
                 None,
                 None
             ]:
@@ -149,7 +149,7 @@ def _migrate_jails(
                 event_scope=event.scope
             )
 
-        except iocage.errors.IocageException as e:
+        except ioc.errors.IocageException as e:
             yield event.fail(e)
             continue
 

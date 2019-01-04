@@ -1,5 +1,5 @@
+# Copyright (c) 2017-2019, Stefan Grönke
 # Copyright (c) 2014-2018, iocage
-# Copyright (c) 2017-2018, Stefan Grönke
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -26,11 +26,11 @@
 import typing
 import click
 
-import iocage.errors
-import iocage.Logger
-import iocage.helpers
-import iocage.Resource
-import iocage.Jails
+import ioc.errors
+import ioc.Logger
+import ioc.helpers
+import ioc.Resource
+import ioc.Jails
 
 from .shared.jail import set_properties
 
@@ -52,8 +52,8 @@ def cli(
 ) -> None:
     """Set one or many configuration properties of one jail."""
     parent: typing.Any = ctx.parent
-    logger: iocage.Logger.Logger = parent.logger
-    host: iocage.Host.HostGenerator = parent.host
+    logger: ioc.Logger.Logger = parent.logger
+    host: ioc.Host.HostGenerator = parent.host
 
     # Defaults
     if jail == "defaults":
@@ -69,7 +69,7 @@ def cli(
 
     # Jail Properties
     filters = (f"name={jail}",)
-    ioc_jails = iocage.Jails.JailsGenerator(
+    ioc_jails = ioc.Jails.JailsGenerator(
         filters,
         host=host,
         logger=logger
@@ -77,14 +77,14 @@ def cli(
 
     updated_jail_count = 0
 
-    for ioc_jail in ioc_jails:  # type: iocage.Jail.JailGenerator
+    for ioc_jail in ioc_jails:  # type: ioc.Jail.JailGenerator
 
         try:
             updated_properties = set_properties(
                 properties=props,
                 target=ioc_jail
             )
-        except iocage.errors.IocageException:
+        except ioc.errors.IocageException:
             exit(1)
 
         if len(updated_properties) == 0:

@@ -1,5 +1,5 @@
+# Copyright (c) 2017-2019, Stefan Grönke
 # Copyright (c) 2014-2018, iocage
-# Copyright (c) 2017-2018, Stefan Grönke
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -25,31 +25,31 @@
 """Get a specific jails with this CLI helper function."""
 import typing
 
-import iocage.errors
-import iocage.Jail
-import iocage.Logger
+import ioc.errors
+import ioc.Jail
+import ioc.Logger
 
-from .click import IocageClickContext
+from .click import IocClickContext
 
 
 def get_jail(
     jail_name: str,
-    ctx: IocageClickContext
-) -> iocage.Jail.JailGenerator:
+    ctx: IocClickContext
+) -> ioc.Jail.JailGenerator:
     """Return the jail matching the given name."""
     try:
-        return iocage.Jail.JailGenerator(
+        return ioc.Jail.JailGenerator(
             jail_name,
             logger=ctx.logger,
             host=ctx.host
         )
-    except iocage.errors.IocageException:
+    except ioc.errors.IocageException:
         exit(1)
 
 
 def set_properties(
     properties: typing.Iterable[str],
-    target: 'iocage.LaunchableResource.LaunchableResource'
+    target: 'ioc.LaunchableResource.LaunchableResource'
 ) -> set:
     """Set a bunch of jail properties from a Click option tuple."""
     updated_properties = set()
@@ -66,7 +66,7 @@ def set_properties(
             try:
                 del target.config[key]
                 updated_properties.add(key)
-            except (iocage.errors.IocageException, KeyError):
+            except (ioc.errors.IocageException, KeyError):
                 pass
 
     if len(updated_properties) > 0:

@@ -1,14 +1,9 @@
-ZPOOL?=
-JAIL_NIC?=vtnet0
-JAIL_IP?=172.16.0
-JAIL_NET?=16
-MYPYPATH = $(shell pwd)/.travis/mypy-stubs
-
 deps:
-	if [ "`uname`" = "FreeBSD" ]; then pkg install -q -y libucl py36-cython rsync python36 py36-libzfs py36-sysctl; fi
-	python3.6 -m ensurepip
+	# pkg install -q -y py36-ioc
 	python3.6 -m pip install -Ur requirements.txt
-	python3.6 -m pip install -Ur requirements-ioc.txt
+	git submodule init
+	git submodule update
+	cd .libioc/; make install
 install: deps
 	python3.6 -m pip install -U .
 	@if [ -f /usr/local/etc/init.d ]; then \
@@ -26,32 +21,21 @@ install-dev: deps
 		install -m 0755 -o root -g wheel rc.d/ioc /usr/local/etc/rc.d; \
 	fi
 install-travis:
-	python3.6 -m pip install flake8-mutable flake8-docstrings flake8-builtins flake8-mypy bandit bandit-high-entropy-string
+	python3.6 -m pip install -U -r requirements-dev.txt
 uninstall:
-	python3.6 -m pip uninstall -y iocage ioc
+	python3.6 -m pip uninstall -y ioc_cli
 	@if [ -f /usr/local/etc/rc.d/ioc ]; then \
 		rm /usr/local/etc/rc.d/ioc; \
 	fi
 check:
 	flake8 --version
-	flake8 --exclude=".travis,.eggs,__init__.py,docs" --ignore=E203,E252,W391,D107,A001,A002,A003,A004
+	flake8 --exclude=".eggs,__init__.py,docs" --ignore=E203,E252,W391,D107,A001,A002,A003,A004
 	bandit --skip B404 --exclude tests/ -r .
-test:
-	pytest tests --zpool $(ZPOOL)
-regression-test:
-	tests/run-integration.sh
-.PHONY: docs
-docs:
-	sphinx-apidoc -o docs --separate -H libiocage -A "iocage Authors" --full iocage ioc tests
-	if [ "`uname`" = "FreeBSD" ]; then gmake -C docs html; else make -C docs html; fi
-
 help:
 	@echo "    install"
-	@echo "        Installs libiocage"
+	@echo "        Installs ioc"
 	@echo "    uninstall"
-	@echo "        Removes libiocage."
-	@echo "    test"
-	@echo "        Run unit tests with pytest"
+	@echo "        Removes ioc."
 	@echo "    check"
 	@echo "        Run static linters & other static analysis tests"
 	@echo "    install-dev"

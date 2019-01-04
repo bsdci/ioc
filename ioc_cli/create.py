@@ -1,5 +1,5 @@
+# Copyright (c) 2017-2019, Stefan Grönke
 # Copyright (c) 2014-2018, iocage
-# Copyright (c) 2017-2018, Stefan Grönke
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -26,20 +26,20 @@
 import click
 import typing
 
-import iocage.errors
-import iocage.Host
-import iocage.Jail
-import iocage.Logger
-import iocage.Release
-import iocage.ZFS
+import ioc.errors
+import ioc.Host
+import ioc.Jail
+import ioc.Logger
+import ioc.Release
+import ioc.ZFS
 
-from .shared.click import IocageClickContext
+from .shared.click import IocClickContext
 
 __rootcmd__ = True
 
 
 def validate_count(
-    ctx: IocageClickContext,
+    ctx: IocClickContext,
     param: typing.Union[
         click.Option,
         typing.Union[click.Option, click.Parameter],
@@ -54,7 +54,7 @@ def validate_count(
 
             return int(value)
         except ValueError:
-            logger = iocage.Logger.Logger()
+            logger = ioc.Logger.Logger()
             logger.error(f"{value} is not a valid integer.")
             exit(1)
     else:
@@ -109,7 +109,7 @@ def validate_count(
 @click.argument("name")
 @click.argument("props", nargs=-1)
 def cli(
-    ctx: IocageClickContext,
+    ctx: IocClickContext,
     release: typing.Optional[str],
     template: typing.Optional[str],
     count: int,
@@ -121,8 +121,8 @@ def cli(
 ) -> None:
     """Create iocage jails."""
     logger = ctx.parent.logger
-    zfs: iocage.ZFS.ZFS = ctx.parent.zfs
-    host: iocage.Host.Host = ctx.parent.host
+    zfs: ioc.ZFS.ZFS = ctx.parent.zfs
+    host: ioc.Host.Host = ctx.parent.host
 
     jail_data: typing.Dict[str, typing.Any] = {}
 
@@ -134,11 +134,11 @@ def cli(
         release = host.release_version
 
     try:
-        resource_selector = iocage.ResourceSelector.ResourceSelector(
+        resource_selector = ioc.ResourceSelector.ResourceSelector(
             name,
             logger=logger
         )
-    except iocage.errors.IocageException:
+    except ioc.errors.IocageException:
         exit(1)
 
     jail_data["name"] = resource_selector.name
@@ -146,7 +146,7 @@ def cli(
 
     try:
         if release is not None:
-            resource = iocage.Release.ReleaseGenerator(
+            resource = ioc.Release.ReleaseGenerator(
                 name=release,
                 root_datasets_name=root_datasets_name,
                 logger=logger,
@@ -174,7 +174,7 @@ def cli(
                     )
                     resource.fetch()
         elif template is not None:
-            resource = iocage.Jail.JailGenerator(
+            resource = ioc.Jail.JailGenerator(
                 template,
                 root_datasets_name=root_datasets_name,
                 logger=logger,
@@ -196,13 +196,13 @@ def cli(
                 except (ValueError, KeyError):
                     logger.error(f"Invalid property {prop}")
                     exit(1)
-    except iocage.errors.IocageException:
+    except ioc.errors.IocageException:
         exit(1)
 
     errors = False
     for i in range(count):
 
-        jail = iocage.Jail.JailGenerator(
+        jail = ioc.Jail.JailGenerator(
             jail_data,
             root_datasets_name=root_datasets_name,
             logger=logger,
@@ -220,7 +220,7 @@ def cli(
                 f"{msg_source}!{suffix}"
             )
             logger.log(msg)
-        except iocage.errors.IocageException:
+        except ioc.errors.IocageException:
             exit(1)
 
     exit(int(errors))

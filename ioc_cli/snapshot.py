@@ -1,5 +1,5 @@
+# Copyright (c) 2017-2019, Stefan Grönke
 # Copyright (c) 2014-2018, iocage
-# Copyright (c) 2017-2018, Stefan Grönke
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -26,10 +26,10 @@
 import typing
 import click
 
-import iocage.Jail
-import iocage.Logger
+import ioc.Jail
+import ioc.Logger
 
-from .shared.click import IocageClickContext
+from .shared.click import IocClickContext
 from .shared.jail import get_jail
 from .shared.output import print_table
 
@@ -41,7 +41,7 @@ __rootcmd__ = True
 )
 @click.pass_context
 def cli_list_or_create(
-    ctx: IocageClickContext
+    ctx: IocClickContext
 ) -> None:
     """
     Choose whether to list or create a snapshot.
@@ -61,12 +61,12 @@ def cli_list_or_create(
 )
 @click.pass_context
 @click.argument("identifier", nargs=1, required=True)
-def cli_create(ctx: IocageClickContext, identifier: str) -> None:
+def cli_create(ctx: IocClickContext, identifier: str) -> None:
     """Create a snapshot."""
     _cli_create(ctx, identifier)
 
 
-def _cli_create(ctx: IocageClickContext, identifier: str) -> None:
+def _cli_create(ctx: IocClickContext, identifier: str) -> None:
     try:
         ioc_jail, snapshot_name = _parse_identifier(
             ctx=ctx.parent,
@@ -74,7 +74,7 @@ def _cli_create(ctx: IocageClickContext, identifier: str) -> None:
             require_full_identifier=True
         )
         ioc_jail.snapshots.create(snapshot_name)
-    except iocage.errors.IocageException:
+    except ioc.errors.IocageException:
         pass
 
 
@@ -86,7 +86,7 @@ def _cli_create(ctx: IocageClickContext, identifier: str) -> None:
 @click.argument("identifier", nargs=1, required=True)
 @click.option("--force", "-f", is_flag=True, help="Force ZFS rollback")
 def cli_rollback(
-    ctx: IocageClickContext,
+    ctx: IocClickContext,
     identifier: str,
     force: bool
 ) -> None:
@@ -98,7 +98,7 @@ def cli_rollback(
             require_full_identifier=True
         )
         ioc_jail.snapshots.rollback(snapshot_name, force=force)
-    except iocage.errors.IocageException:
+    except ioc.errors.IocageException:
         pass
 
 
@@ -108,12 +108,12 @@ def cli_rollback(
 )
 @click.pass_context
 @click.argument("jail", nargs=1, required=True)
-def cli_list(ctx: IocageClickContext, jail: str) -> None:
+def cli_list(ctx: IocClickContext, jail: str) -> None:
     """List existing snapshots."""
     _cli_list(ctx, jail)
 
 
-def _cli_list(ctx: IocageClickContext, jail: str) -> None:
+def _cli_list(ctx: IocClickContext, jail: str) -> None:
     try:
         ioc_jail, snapshot_name = _parse_identifier(
             ctx=ctx.parent,
@@ -123,7 +123,7 @@ def _cli_list(ctx: IocageClickContext, jail: str) -> None:
         columns = ["NAME"]
         data = [[x.name.split("@", maxsplit=1)[1]] for x in ioc_jail.snapshots]
         print_table(data, columns)
-    except iocage.errors.IocageException:
+    except ioc.errors.IocageException:
         pass
 
 
@@ -133,7 +133,7 @@ def _cli_list(ctx: IocageClickContext, jail: str) -> None:
 )
 @click.argument("identifier", nargs=1, required=True)
 @click.pass_context
-def cli_remove(ctx: IocageClickContext, identifier: str) -> None:
+def cli_remove(ctx: IocClickContext, identifier: str) -> None:
     """Remove a snapshot."""
     try:
         ioc_jail, snapshot_name = _parse_identifier(
@@ -142,7 +142,7 @@ def cli_remove(ctx: IocageClickContext, identifier: str) -> None:
             require_full_identifier=True
         )
         ioc_jail.snapshots.delete(snapshot_name)
-    except iocage.errors.IocageException:
+    except ioc.errors.IocageException:
         pass
 
 
@@ -189,7 +189,7 @@ class SnapshotCli(click.MultiCommand):
 )
 @click.pass_context
 def cli(
-    ctx: IocageClickContext
+    ctx: IocClickContext
 ) -> None:
     """Take and manage resource snapshots."""
     ctx.logger = ctx.parent.logger
@@ -197,17 +197,17 @@ def cli(
 
 
 def _parse_identifier(
-    ctx: IocageClickContext,
+    ctx: IocClickContext,
     identifier: str,
     require_full_identifier: bool=False
-) -> typing.Tuple[iocage.Jail.JailGenerator, typing.Optional[str]]:
+) -> typing.Tuple[ioc.Jail.JailGenerator, typing.Optional[str]]:
 
     snapshot_name: typing.Optional[str] = None
     try:
         jail, snapshot_name = identifier.split("@")
     except ValueError:
         if require_full_identifier is True:
-            raise iocage.errors.InvalidSnapshotIdentifier(
+            raise ioc.errors.InvalidSnapshotIdentifier(
                 identifier=identifier,
                 logger=ctx.parent.logger
             )

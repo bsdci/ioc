@@ -1,5 +1,5 @@
+# Copyright (c) 2017-2019, Stefan Grönke
 # Copyright (c) 2014-2018, iocage
-# Copyright (c) 2017-2018, Stefan Grönke
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -25,11 +25,11 @@
 """Clone and promote jails."""
 import click
 
-import iocage.errors
-import iocage.ZFS
-import iocage.Jail
+import ioc.errors
+import ioc.ZFS
+import ioc.Jail
 
-from .shared.click import IocageClickContext
+from .shared.click import IocClickContext
 
 __rootcmd__ = True
 
@@ -51,7 +51,7 @@ def _is_dataset_name(name: str) -> bool:
     required=True
 )
 def cli(
-    ctx: IocageClickContext,
+    ctx: IocClickContext,
     source: str,
     destination: str
 ) -> None:
@@ -59,14 +59,14 @@ def cli(
     print_function = ctx.parent.print_events
     logger = ctx.parent.logger
 
-    ioc_source_jail = iocage.Jail.JailGenerator(
+    ioc_source_jail = ioc.Jail.JailGenerator(
         dict(id=source),
         logger=logger,
         zfs=ctx.parent.zfs,
         host=ctx.parent.host
     )
 
-    ioc_destination_jail = iocage.Jail.JailGenerator(
+    ioc_destination_jail = ioc.Jail.JailGenerator(
         dict(id=destination),
         new=True,
         logger=logger,
@@ -76,5 +76,5 @@ def cli(
 
     try:
         print_function(ioc_destination_jail.clone_from_jail(ioc_source_jail))
-    except iocage.errors.IocageException:
+    except ioc.errors.IocageException:
         exit(1)

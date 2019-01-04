@@ -1,5 +1,5 @@
+# Copyright (c) 2017-2019, Stefan Grönke
 # Copyright (c) 2014-2018, iocage
-# Copyright (c) 2017-2018, Stefan Grönke
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -26,18 +26,18 @@
 import typing
 import click.core
 
-import iocage.events
-import iocage.Logger
-import iocage.Host
+import ioc.events
+import ioc.Logger
+import ioc.Host
 
 
-class IocageClickContext(click.core.Context):
+class IocClickContext(click.core.Context):
     """ioc ctx for Click CLI."""
 
-    logger: iocage.Logger.Logger
-    host: iocage.Host.Host
-    parent: 'IocageClickContext'
+    logger: ioc.Logger.Logger
+    host: ioc.Host.Host
+    parent: 'IocClickContext'
     print_events: typing.Callable[
-        [typing.Generator[iocage.events.IocageEvent, None, None]],
+        [typing.Generator[ioc.events.IocageEvent, None, None]],
         None
     ]

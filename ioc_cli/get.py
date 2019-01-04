@@ -1,5 +1,5 @@
+# Copyright (c) 2017-2019, Stefan Grönke
 # Copyright (c) 2014-2018, iocage
-# Copyright (c) 2017-2018, Stefan Grönke
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -26,12 +26,12 @@
 import typing
 import click
 
-import iocage.errors
-import iocage.Host
-import iocage.Jail
-import iocage.Logger
+import ioc.errors
+import ioc.Host
+import ioc.Jail
+import ioc.Logger
 
-from .shared.click import IocageClickContext
+from .shared.click import IocClickContext
 
 
 @click.command(
@@ -52,14 +52,14 @@ from .shared.click import IocageClickContext
     is_flag=True
 )
 def cli(
-    ctx: IocageClickContext,
+    ctx: IocClickContext,
     prop: typing.Tuple[str],
     _all: bool,
     jail: typing.Optional[str]
 ) -> None:
     """Get a list of jails and print the property."""
     logger = ctx.parent.logger
-    host = iocage.Host.Host(logger=logger)
+    host = ioc.Host.Host(logger=logger)
 
     _prop = None if len(prop) == 0 else prop[0]
 
@@ -78,12 +78,12 @@ def cli(
     else:
         lookup_method = _lookup_jail_value
         try:
-            source_resource = iocage.Jail.Jail(
+            source_resource = ioc.Jail.Jail(
                 jail,
                 host=host,
                 logger=logger
             )
-        except iocage.errors.JailNotFound:
+        except ioc.errors.JailNotFound:
             exit(1)
 
     if (_prop is None) and (jail == "") and not _all:
@@ -114,14 +114,14 @@ def _print_property(key: str, value: str) -> None:
 
 
 def _lookup_config_value(
-    resource: 'iocage.Resource.Resource',
+    resource: 'ioc.Resource.Resource',
     key: str
 ) -> str:
-    return str(iocage.helpers.to_string(resource.config[key]))
+    return str(ioc.helpers.to_string(resource.config[key]))
 
 
 def _lookup_jail_value(
-    resource: 'iocage.LaunchableResource.LaunchableResource',
+    resource: 'ioc.LaunchableResource.LaunchableResource',
     key: str
 ) -> str:
 
@@ -130,4 +130,4 @@ def _lookup_jail_value(
     else:
         value = resource.getstring(key)
 
-    return str(iocage.helpers.to_string(value))
+    return str(ioc.helpers.to_string(value))

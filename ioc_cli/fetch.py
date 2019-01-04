@@ -1,5 +1,5 @@
+# Copyright (c) 2017-2019, Stefan Grönke
 # Copyright (c) 2014-2018, iocage
-# Copyright (c) 2017-2018, Stefan Grönke
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -26,12 +26,12 @@
 import click
 import typing
 
-import iocage.Host
-import iocage.Prompts
-import iocage.Release
-import iocage.errors
+import ioc.Host
+import ioc.Prompts
+import ioc.Release
+import ioc.errors
 
-from .shared.click import IocageClickContext
+from .shared.click import IocClickContext
 
 __rootcmd__ = True
 
@@ -87,37 +87,37 @@ __rootcmd__ = True
     )
 )
 def cli(  # noqa: T484
-    ctx: IocageClickContext,
+    ctx: IocClickContext,
     **kwargs
 ) -> None:
     """Fetch and update releases."""
     logger = ctx.parent.logger
     host = ctx.parent.host
     zfs = ctx.parent.zfs
-    prompts = iocage.Prompts.Prompts(host=host, logger=logger)
+    prompts = ioc.Prompts.Prompts(host=host, logger=logger)
 
     release_input = kwargs["release"]
     if release_input is None:
         try:
             release = prompts.release()
-        except iocage.errors.DefaultReleaseNotFound:
+        except ioc.errors.DefaultReleaseNotFound:
             exit(1)
     else:
         try:
-            release = iocage.Release.ReleaseGenerator(
+            release = ioc.Release.ReleaseGenerator(
                 name=release_input,
                 host=host,
                 zfs=zfs,
                 logger=logger
             )
-        except iocage.errors.IocageException:
+        except ioc.errors.IocageException:
             exit(1)
 
     if kwargs["copy_basejail_only"] is True:
         try:
             release.update_base_release()
             exit(0)
-        except iocage.errors.IocageException:
+        except ioc.errors.IocageException:
             exit(1)
 
     url_or_files_selected = False
@@ -140,7 +140,7 @@ def cli(  # noqa: T484
             update=kwargs["update"],
             fetch_updates=fetch_updates
         ))
-    except iocage.errors.IocageException:
+    except ioc.errors.IocageException:
         exit(1)
 
     exit(0)

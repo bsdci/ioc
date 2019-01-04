@@ -1,5 +1,5 @@
+# Copyright (c) 2017-2019, Stefan Grönke
 # Copyright (c) 2014-2018, iocage
-# Copyright (c) 2017-2018, Stefan Grönke
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -27,10 +27,10 @@ import click
 import typing
 import shlex
 
-import iocage.Jail
-import iocage.Logger
+import ioc.Jail
+import ioc.Logger
 
-from .shared.click import IocageClickContext
+from .shared.click import IocClickContext
 
 __rootcmd__ = True
 
@@ -55,7 +55,7 @@ __rootcmd__ = True
 @click.argument("jail", required=True, nargs=1)
 @click.argument("command", nargs=-1, type=click.UNPROCESSED)
 def cli(
-    ctx: IocageClickContext,
+    ctx: IocClickContext,
     command: typing.List[str],
     jail: str,
     user: typing.Optional[str],
@@ -87,7 +87,7 @@ def cli(
             shlex.quote(user_command)
         ]
 
-    ioc_jail = iocage.Jail.JailGenerator(
+    ioc_jail = ioc.Jail.JailGenerator(
         jail,
         logger=logger,
         zfs=ctx.parent.zfs,
@@ -114,5 +114,5 @@ def cli(
                 continue
         else:
             ioc_jail.passthru(command_list)
-    except iocage.errors.IocageException:
+    except ioc.errors.IocageException:
         exit(1)

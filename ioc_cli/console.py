@@ -1,5 +1,5 @@
+# Copyright (c) 2017-2019, Stefan Grönke
 # Copyright (c) 2014-2018, iocage
-# Copyright (c) 2017-2018, Stefan Grönke
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -25,9 +25,9 @@
 """Console subcommand for the CLI."""
 import click
 
-import iocage.Jail
-import iocage.Logger
-import iocage.errors
+import ioc.Jail
+import ioc.Logger
+import ioc.errors
 
 __rootcmd__ = True
 
@@ -41,14 +41,14 @@ def cli(ctx, jail, start):
     logger = ctx.parent.logger
 
     try:
-        ioc_jail = iocage.Jail.JailGenerator(
+        ioc_jail = ioc.Jail.JailGenerator(
             jail,
             logger=logger,
             zfs=ctx.parent.zfs,
             host=ctx.parent.host
         )
         ioc_jail.state.query()
-    except iocage.errors.JailNotFound:
+    except ioc.errors.JailNotFound:
         exit(1)
 
     try:
@@ -57,6 +57,6 @@ def cli(ctx, jail, start):
                 ctx.parent.print_events(ioc_jail.start())
 
         ioc_jail.exec_console()
-    except iocage.errors.IocageException:
+    except ioc.errors.IocageException:
         exit(1)
 

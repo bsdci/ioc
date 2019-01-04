@@ -1,5 +1,5 @@
+# Copyright (c) 2017-2019, Stefan Grönke
 # Copyright (c) 2014-2018, iocage
-# Copyright (c) 2017-2018, Stefan Grönke
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -26,11 +26,11 @@
 import typing
 import click
 
-import iocage.errors
-import iocage.Jails
-import iocage.Logger
+import ioc.errors
+import ioc.Jails
+import ioc.Logger
 
-from .shared.click import IocageClickContext
+from .shared.click import IocClickContext
 
 __rootcmd__ = True
 
@@ -44,7 +44,7 @@ __rootcmd__ = True
               help="Skip checks and enforce jail shutdown")
 @click.argument("jails", nargs=-1)
 def cli(
-    ctx: IocageClickContext,
+    ctx: IocClickContext,
     rc: bool,
     force: bool,
     jails: typing.Tuple[str, ...]
@@ -87,11 +87,11 @@ def cli(
 
 def _normal(
     filters: typing.Tuple[str, ...],
-    zfs: iocage.Host.HostGenerator,
-    host: iocage.Host.HostGenerator,
-    logger: iocage.Logger.Logger,
+    zfs: ioc.Host.HostGenerator,
+    host: ioc.Host.HostGenerator,
+    logger: ioc.Logger.Logger,
     print_function: typing.Callable[
-        [typing.Generator[iocage.events.IocageEvent, None, None]],
+        [typing.Generator[ioc.events.IocageEvent, None, None]],
         None
     ],
     force: bool
@@ -99,7 +99,7 @@ def _normal(
 
     filters += ("template=no,-",)
 
-    jails = iocage.Jails.JailsGenerator(
+    jails = ioc.Jails.JailsGenerator(
         zfs=zfs,
         host=host,
         logger=logger,
@@ -111,7 +111,7 @@ def _normal(
     for jail in jails:
         try:
             print_function(jail.stop(force=force))
-        except iocage.errors.IocageException:
+        except ioc.errors.IocageException:
             failed_jails.append(jail)
             continue
 
@@ -130,11 +130,11 @@ def _normal(
 
 
 def _autostop(
-    zfs: iocage.ZFS.ZFS,
-    host: iocage.Host.HostGenerator,
-    logger: iocage.Logger.Logger,
+    zfs: ioc.ZFS.ZFS,
+    host: ioc.Host.HostGenerator,
+    logger: ioc.Logger.Logger,
     print_function: typing.Callable[
-        [typing.Generator[iocage.events.IocageEvent, None, None]],
+        [typing.Generator[ioc.events.IocageEvent, None, None]],
         None
     ],
     force: bool=True
@@ -142,7 +142,7 @@ def _autostop(
 
     filters = ("running=yes", "template=no,-",)
 
-    ioc_jails = iocage.Jails.Jails(
+    ioc_jails = ioc.Jails.Jails(
         host=host,
         zfs=zfs,
         logger=logger,
@@ -159,7 +159,7 @@ def _autostop(
     for jail in jails:
         try:
             jail.stop(force=force)
-        except iocage.errors.IocageException:
+        except ioc.errors.IocageException:
             failed_jails.append(jail)
             continue
 

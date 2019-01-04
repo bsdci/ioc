@@ -1,5 +1,5 @@
+# Copyright (c) 2017-2019, Stefan Grönke
 # Copyright (c) 2014-2018, iocage
-# Copyright (c) 2017-2018, Stefan Grönke
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -27,17 +27,17 @@ import click
 import json
 import typing
 
-import iocage.errors
-import iocage.Logger
-import iocage.Host
-import iocage.Datasets
-import iocage.Resource
-import iocage.ListableResource
-import iocage.Jails
-import iocage.Releases
+import ioc.errors
+import ioc.Logger
+import ioc.Host
+import ioc.Datasets
+import ioc.Resource
+import ioc.ListableResource
+import ioc.Jails
+import ioc.Releases
 
 from .shared.output import print_table
-from .shared.click import IocageClickContext
+from .shared.click import IocClickContext
 
 __rootcmd__ = True
 
@@ -70,7 +70,7 @@ supported_output_formats = ['table', 'csv', 'list', 'json']
               help="Show or hide column name heading.")
 @click.argument("filters", nargs=-1)
 def cli(
-    ctx: IocageClickContext,
+    ctx: IocClickContext,
     dataset_type: str,
     header: bool,
     _long: bool,
@@ -83,7 +83,7 @@ def cli(
     """List jails in various formats."""
     logger = ctx.parent.logger
     zfs = ctx.parent.zfs
-    host: iocage.Host.HostGenerator = ctx.parent.host
+    host: ioc.Host.HostGenerator = ctx.parent.host
 
     if output is not None and _long is True:
         logger.error("--output and --long can't be used together")
@@ -108,7 +108,7 @@ def cli(
 
         elif (dataset_type == "pool"):
             columns = ["name", "dataset"]
-            datasets = iocage.Datasets.Datasets(zfs=zfs, logger=logger)
+            datasets = ioc.Datasets.Datasets(zfs=zfs, logger=logger)
             resources = [
                 dict(
                     name=name,
@@ -119,7 +119,7 @@ def cli(
         else:
 
             if (dataset_type == "base"):
-                resources_class = iocage.Releases.ReleasesGenerator
+                resources_class = ioc.Releases.ReleasesGenerator
                 columns = ["full_name"]
             elif (dataset_type == "datasets"):
                 resources_class = None
@@ -130,7 +130,7 @@ def cli(
                     in host.datasets.items()
                 ]
             else:
-                resources_class = iocage.Jails.JailsGenerator
+                resources_class = ioc.Jails.JailsGenerator
                 columns = _list_output_comumns(output, _long)
                 if dataset_type == "template":
                     filters += ("template=yes",)
@@ -146,7 +146,7 @@ def cli(
                     filters=filters
                 )
 
-    except iocage.errors.IocageException:
+    except ioc.errors.IocageException:
         exit(1)
 
     if output_format == "list":
@@ -162,7 +162,7 @@ def cli(
 def _print_table(
     resources: typing.Generator[
         typing.Union[
-            iocage.ListableResource.ListableResource,
+            ioc.ListableResource.ListableResource,
             typing.List[typing.Dict[str, str]]
         ],
         None,
@@ -183,7 +183,7 @@ def _print_table(
 def _print_list(
     resources: typing.Generator[
         typing.Union[
-            iocage.ListableResource.ListableResource,
+            ioc.ListableResource.ListableResource,
             typing.List[typing.Dict[str, str]]
         ],
         None,
@@ -204,7 +204,7 @@ def _print_list(
 def _print_json(
     resources: typing.Generator[
         typing.Union[
-            iocage.ListableResource.ListableResource,
+            ioc.ListableResource.ListableResource,
             typing.List[typing.Dict[str, str]]
         ],
         None,
@@ -232,14 +232,14 @@ def _print_json(
 
 def _lookup_resource_values(
     resource: typing.Union[
-        'iocage.Resource.Resource',
+        'ioc.Resource.Resource',
         typing.Dict[str, str]
     ],
     columns: typing.List[str]
 ) -> typing.List[str]:
-    is_resorce = isinstance(resource, iocage.Resource.Resource)
+    is_resorce = isinstance(resource, ioc.Resource.Resource)
     if is_resorce and ("getstring" in resource.__dir__()):
-        _resource = resource  # type: iocage.Resource.Resource
+        _resource = resource  # type: ioc.Resource.Resource
         return list(map(
             lambda column: str(_resource.getstring(column)),
             columns

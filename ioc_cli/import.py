@@ -1,5 +1,5 @@
+# Copyright (c) 2017-2019, Stefan Grönke
 # Copyright (c) 2014-2018, iocage
-# Copyright (c) 2017-2018, Stefan Grönke
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -25,12 +25,12 @@
 """Export a jail from the CLI."""
 import click
 
-import iocage.errors
-import iocage.Jail
-import iocage.Host
-import iocage.ZFS
+import ioc.errors
+import ioc.Jail
+import ioc.Host
+import ioc.ZFS
 
-from .shared.click import IocageClickContext
+from .shared.click import IocClickContext
 
 __rootcmd__ = True
 
@@ -40,17 +40,17 @@ __rootcmd__ = True
 @click.argument("jail", required=True)
 @click.argument("source", required=True)
 def cli(
-    ctx: IocageClickContext,
+    ctx: IocClickContext,
     jail: str,
     source: str
 ) -> None:
     """Restore a jail from a backup archive."""
     logger = ctx.parent.logger
-    zfs: iocage.ZFS.ZFS = ctx.parent.zfs
-    host: iocage.Host.HostGenerator = ctx.parent.host
+    zfs: ioc.ZFS.ZFS = ctx.parent.zfs
+    host: ioc.Host.HostGenerator = ctx.parent.host
     print_events = ctx.parent.print_events
 
-    ioc_jail = iocage.Jail.JailGenerator(
+    ioc_jail = ioc.Jail.JailGenerator(
         dict(name=jail),
         logger=logger,
         zfs=zfs,
@@ -64,5 +64,5 @@ def cli(
 
     try:
         print_events(ioc_jail.backup.restore(source))
-    except iocage.errors.IocageException:
+    except ioc.errors.IocageException:
         exit(1)
