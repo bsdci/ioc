@@ -15,7 +15,7 @@ Jails created with either or mixed versions of the above implementations can be 
 For performance reasons a migration to the latest configuration format is recommended:
 
 ```sh
-ioc set config_type=
+ioc set config_type=json basejail=yes basejail_type=nullfs <MY_JAIL>
 ```
 
 ## Install
