@@ -1,0 +1,16 @@
+#!/usr/local/bin/python3.6
+import sys
+import os.path
+
+LIB_DIR = "../"
+
+if LIB_DIR.startswith("/") is False:
+    __dirname = os.path.dirname(os.path.abspath(__file__))
+    LIB_DIR = f"{__dirname}/{LIB_DIR}"
+
+sys.path.insert(0, os.path.abspath(LIB_DIR))
+
+from ioc_cli import cli
+
+if __name__ == '__main__':
+    sys.dd:exit(cli())
