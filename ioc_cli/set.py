@@ -57,10 +57,14 @@ def cli(
 
     # Defaults
     if jail == "defaults":
-        updated_properties = set_properties(
-            properties=props,
-            target=host.defaults
-        )
+        try:
+            updated_properties = set_properties(
+                properties=props,
+                target=host.defaults
+            )
+        except ioc.errors.IocageException:
+            exit(1)
+
         if len(updated_properties) > 0:
             logger.screen("Defaults updated: " + ", ".join(updated_properties))
         else:
