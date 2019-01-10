@@ -137,7 +137,7 @@ def cli_add(
             f"fstab mount added: {source} -> {desination_path} ({mount_opts})"
         )
         exit(0)
-    except ioc.errors.IocageException:
+    except ioc.errors.IocException:
         exit(1)
 
 
@@ -182,7 +182,7 @@ def cli_rm(ctx: IocClickContext, source: str, jail: str) -> None:
                 del fstab[i - 1]
                 fstab.save()
                 break
-    except ioc.errors.IocageException:
+    except ioc.errors.IocException:
         exit(1)
 
     if destination is None:

@@ -62,5 +62,5 @@ def cli(ctx, zpool, mountpoint):
             mountpoint=mountpoint
         )
         logger.log(f"ZFS pool '{zpool}' activated")
-    except ioc.errors.IocageException:
+    except ioc.errors.IocException:
         exit(1)

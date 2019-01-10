@@ -74,7 +74,7 @@ def _cli_create(ctx: IocClickContext, identifier: str) -> None:
             require_full_identifier=True
         )
         ioc_jail.snapshots.create(snapshot_name)
-    except ioc.errors.IocageException:
+    except ioc.errors.IocException:
         pass
 
 
@@ -98,7 +98,7 @@ def cli_rollback(
             require_full_identifier=True
         )
         ioc_jail.snapshots.rollback(snapshot_name, force=force)
-    except ioc.errors.IocageException:
+    except ioc.errors.IocException:
         pass
 
 
@@ -123,7 +123,7 @@ def _cli_list(ctx: IocClickContext, jail: str) -> None:
         columns = ["NAME"]
         data = [[x.name.split("@", maxsplit=1)[1]] for x in ioc_jail.snapshots]
         print_table(data, columns)
-    except ioc.errors.IocageException:
+    except ioc.errors.IocException:
         pass
 
 
@@ -142,7 +142,7 @@ def cli_remove(ctx: IocClickContext, identifier: str) -> None:
             require_full_identifier=True
         )
         ioc_jail.snapshots.delete(snapshot_name)
-    except ioc.errors.IocageException:
+    except ioc.errors.IocException:
         pass
 
 

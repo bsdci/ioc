@@ -64,5 +64,5 @@ def cli(
 
     try:
         print_events(ioc_jail.backup.restore(source))
-    except ioc.errors.IocageException:
+    except ioc.errors.IocException:
         exit(1)

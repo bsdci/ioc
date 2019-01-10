@@ -36,7 +36,7 @@ from .shared.click import IocClickContext
 __rootcmd__ = True
 
 
-class JailMigrationEvent(ioc.events.IocageEvent):
+class JailMigrationEvent(ioc.events.IocEvent):
     """CLI event that occurs when a jail is migrated from legacy format."""
 
     def __init__(
@@ -44,7 +44,7 @@ class JailMigrationEvent(ioc.events.IocageEvent):
         jail: 'ioc.Jail.JailGenerator'
     ) -> None:
         self.identifier = jail.full_name
-        ioc.events.IocageEvent.__init__(self)
+        ioc.events.IocEvent.__init__(self)
 
 
 @click.command(name="migrate", help="Migrate jails to the latest format.")
@@ -85,7 +85,7 @@ def _migrate_jails(
     logger: 'ioc.Logger.Logger',
     host: 'ioc.Host.HostGenerator',
     zfs: 'ioc.ZFS.ZFS'
-) -> typing.Generator['ioc.events.IocageEvent', None, None]:
+) -> typing.Generator['ioc.events.IocEvent', None, None]:
 
     for jail in jails:
 
@@ -126,7 +126,7 @@ def _migrate_jails(
                 )
 
             def _destroy_unclean_migration() -> typing.Generator[
-                'ioc.events.IocageEvents',
+                'ioc.events.IocEvents',
                 None,
                 None
             ]:
@@ -149,7 +149,7 @@ def _migrate_jails(
                 event_scope=event.scope
             )
 
-        except ioc.errors.IocageException as e:
+        except ioc.errors.IocException as e:
             yield event.fail(e)
             continue
 

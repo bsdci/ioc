@@ -74,7 +74,7 @@ def _provision(
     host: ioc.Host.HostGenerator,
     logger: ioc.Logger.Logger,
     print_function: typing.Callable[
-        [typing.Generator[ioc.events.IocageEvent, None, None]],
+        [typing.Generator[ioc.events.IocEvent, None, None]],
         None
     ]
 ) -> bool:
@@ -94,12 +94,12 @@ def _provision(
                 properties=temporary_config_override,
                 target=jail
             )
-        except ioc.errors.IocageException:
+        except ioc.errors.IocException:
             exit(1)
 
         try:
             print_function(_execute_provisioner(jail))
-        except ioc.errors.IocageException:
+        except ioc.errors.IocException:
             failed_jails.append(jail)
             continue
 
@@ -118,7 +118,7 @@ def _provision(
 
 def _execute_provisioner(
     jail: 'ioc.Jail.JailsGenerator'
-) -> typing.Generator['ioc.events.IocageEvent', None, None]:
+) -> typing.Generator['ioc.events.IocEvent', None, None]:
     for event in jail.provisioner.provision():
         yield event
         if isinstance(event, ioc.events.JailCommandExecution):

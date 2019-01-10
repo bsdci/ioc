@@ -92,5 +92,5 @@ def cli(
             standalone=standalone,
             recursive=recursive
         ))
-    except ioc.errors.IocageException:
+    except ioc.errors.IocException:
         exit(1)

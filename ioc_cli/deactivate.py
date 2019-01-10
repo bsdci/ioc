@@ -58,5 +58,5 @@ def cli(ctx, zpool):
             logger.log(f"ZFS pool '{zpool}' deactivated")
         else:
             logger.warn(f"ZFS pool '{zpool}' is not active")
-    except ioc.errors.IocageException:
+    except ioc.errors.IocException:
         exit(1)

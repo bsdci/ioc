@@ -110,14 +110,14 @@ def cli(  # noqa: T484
                 zfs=zfs,
                 logger=logger
             )
-        except ioc.errors.IocageException:
+        except ioc.errors.IocException:
             exit(1)
 
     if kwargs["copy_basejail_only"] is True:
         try:
             release.update_base_release()
             exit(0)
-        except ioc.errors.IocageException:
+        except ioc.errors.IocException:
             exit(1)
 
     url_or_files_selected = False
@@ -140,7 +140,7 @@ def cli(  # noqa: T484
             update=kwargs["update"],
             fetch_updates=fetch_updates
         ))
-    except ioc.errors.IocageException:
+    except ioc.errors.IocException:
         exit(1)
 
     exit(0)

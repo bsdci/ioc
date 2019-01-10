@@ -62,7 +62,7 @@ def cli(
                 properties=props,
                 target=host.defaults
             )
-        except ioc.errors.IocageException:
+        except ioc.errors.IocException:
             exit(1)
 
         if len(updated_properties) > 0:
@@ -88,7 +88,7 @@ def cli(
                 properties=props,
                 target=ioc_jail
             )
-        except ioc.errors.IocageException:
+        except ioc.errors.IocException:
             exit(1)
 
         if len(updated_properties) == 0:

@@ -114,5 +114,5 @@ def cli(
                 continue
         else:
             ioc_jail.passthru(command_list)
-    except ioc.errors.IocageException:
+    except ioc.errors.IocException:
         exit(1)

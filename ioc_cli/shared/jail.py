@@ -43,7 +43,7 @@ def get_jail(
             logger=ctx.logger,
             host=ctx.host
         )
-    except ioc.errors.IocageException:
+    except ioc.errors.IocException:
         exit(1)
 
 
@@ -66,7 +66,7 @@ def set_properties(
             try:
                 del target.config[key]
                 updated_properties.add(key)
-            except (ioc.errors.IocageException, KeyError):
+            except (ioc.errors.IocException, KeyError):
                 pass
 
     if len(updated_properties) > 0:

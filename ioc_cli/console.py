@@ -57,6 +57,6 @@ def cli(ctx, jail, start):
                 ctx.parent.print_events(ioc_jail.start())
 
         ioc_jail.exec_console()
-    except ioc.errors.IocageException:
+    except ioc.errors.IocException:
         exit(1)
 

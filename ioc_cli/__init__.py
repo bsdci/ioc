@@ -33,7 +33,7 @@ import sys
 import click
 
 from ioc.Logger import Logger
-from ioc.events import IocageEvent
+from ioc.events import IocEvent
 from ioc.errors import (
     InvalidLogLevel,
     IocageNotActivated,
@@ -80,7 +80,7 @@ def set_to_dict(data: typing.Set[str]) -> typing.Dict[str, str]:
 
 
 def print_events(
-    generator: typing.Generator[typing.Union[IocageEvent, bool], None, None]
+    generator: typing.Generator[typing.Union[IocEvent, bool], None, None]
 ) -> typing.Optional[bool]:
 
     lines: typing.Dict[str, str] = {}

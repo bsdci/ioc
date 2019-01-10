@@ -138,7 +138,7 @@ def cli(
             name,
             logger=logger
         )
-    except ioc.errors.IocageException:
+    except ioc.errors.IocException:
         exit(1)
 
     jail_data["name"] = resource_selector.name
@@ -196,7 +196,7 @@ def cli(
                 except (ValueError, KeyError):
                     logger.error(f"Invalid property {prop}")
                     exit(1)
-    except ioc.errors.IocageException:
+    except ioc.errors.IocException:
         exit(1)
 
     errors = False
@@ -220,7 +220,7 @@ def cli(
                 f"{msg_source}!{suffix}"
             )
             logger.log(msg)
-        except ioc.errors.IocageException:
+        except ioc.errors.IocException:
             exit(1)
 
     exit(int(errors))

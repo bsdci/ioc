@@ -93,7 +93,7 @@ def _autostart(
     host: ioc.Host.HostGenerator,
     logger: ioc.Logger.Logger,
     print_function: typing.Callable[
-        [typing.Generator[ioc.events.IocageEvent, None, None]],
+        [typing.Generator[ioc.events.IocEvent, None, None]],
         None
     ]
 ) -> None:
@@ -120,7 +120,7 @@ def _autostart(
                 logger.log(f"{jail.name} is already running - skipping start")
                 continue
             jail.start()
-        except ioc.errors.IocageException:
+        except ioc.errors.IocException:
             failed_jails.append(jail)
             continue
 
@@ -139,7 +139,7 @@ def _normal(
     host: ioc.Host.HostGenerator,
     logger: ioc.Logger.Logger,
     print_function: typing.Callable[
-        [typing.Generator[ioc.events.IocageEvent, None, None]],
+        [typing.Generator[ioc.events.IocEvent, None, None]],
         None
     ]
 ) -> bool:
@@ -162,7 +162,7 @@ def _normal(
                 properties=temporary_config_override,
                 target=jail
             )
-        except ioc.errors.IocageException:
+        except ioc.errors.IocException:
             exit(1)
         try:
             jail.require_jail_not_template()
@@ -171,7 +171,7 @@ def _normal(
                 skipped_jails.append(jail)
                 continue
             print_function(jail.start())
-        except ioc.errors.IocageException:
+        except ioc.errors.IocException:
             failed_jails.append(jail)
             continue
 

@@ -91,7 +91,7 @@ def _normal(
     host: ioc.Host.HostGenerator,
     logger: ioc.Logger.Logger,
     print_function: typing.Callable[
-        [typing.Generator[ioc.events.IocageEvent, None, None]],
+        [typing.Generator[ioc.events.IocEvent, None, None]],
         None
     ],
     force: bool
@@ -111,7 +111,7 @@ def _normal(
     for jail in jails:
         try:
             print_function(jail.stop(force=force))
-        except ioc.errors.IocageException:
+        except ioc.errors.IocException:
             failed_jails.append(jail)
             continue
 
@@ -134,7 +134,7 @@ def _autostop(
     host: ioc.Host.HostGenerator,
     logger: ioc.Logger.Logger,
     print_function: typing.Callable[
-        [typing.Generator[ioc.events.IocageEvent, None, None]],
+        [typing.Generator[ioc.events.IocEvent, None, None]],
         None
     ],
     force: bool=True
@@ -159,7 +159,7 @@ def _autostop(
     for jail in jails:
         try:
             jail.stop(force=force)
-        except ioc.errors.IocageException:
+        except ioc.errors.IocException:
             failed_jails.append(jail)
             continue
 

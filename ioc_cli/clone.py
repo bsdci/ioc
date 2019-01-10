@@ -76,5 +76,5 @@ def cli(
 
     try:
         print_function(ioc_destination_jail.clone_from_jail(ioc_source_jail))
-    except ioc.errors.IocageException:
+    except ioc.errors.IocException:
         exit(1)

@@ -53,6 +53,6 @@ def cli(
             host=ctx.parent.host
         )
         print_function(ioc_jail.rename(name))
-    except ioc.errors.IocageException:
+    except ioc.errors.IocException:
         exit(1)
 

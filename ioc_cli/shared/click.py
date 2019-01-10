@@ -38,6 +38,6 @@ class IocClickContext(click.core.Context):
     host: ioc.Host.Host
     parent: 'IocClickContext'
     print_events: typing.Callable[
-        [typing.Generator[ioc.events.IocageEvent, None, None]],
+        [typing.Generator[ioc.events.IocEvent, None, None]],
         None
     ]

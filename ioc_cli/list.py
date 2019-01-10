@@ -146,7 +146,7 @@ def cli(
                     filters=filters
                 )
 
-    except ioc.errors.IocageException:
+    except ioc.errors.IocException:
         exit(1)
 
     if output_format == "list":

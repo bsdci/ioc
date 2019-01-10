@@ -125,7 +125,7 @@ def cli(
         try:
             ctx.parent.print_events(item.destroy())
             logger.screen(f"{old_mountpoint} destroyed")
-        except ioc.errors.IocageException:
+        except ioc.errors.IocException:
             failed_items.append(item)
 
     if len(failed_items) > 0:

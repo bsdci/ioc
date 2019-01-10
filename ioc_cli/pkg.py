@@ -81,6 +81,6 @@ def cli(
                 packages=list(packages)
             )
         ctx.parent.print_events(events)
-    except ioc.errors.IocageException:
+    except ioc.errors.IocException:
         exit(1)
 
