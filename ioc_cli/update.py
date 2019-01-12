@@ -33,10 +33,10 @@ are temporarily mounted and applied with securelevel=0.
 import click
 import typing
 
-import ioc.errors
-import ioc.Jails
-import ioc.Logger
-import ioc.Config.Jail.File.Fstab
+import libioc.errors
+import libioc.Jails
+import libioc.Logger
+import libioc.Config.Jail.File.Fstab
 
 from .shared.click import IocClickContext
 
@@ -62,7 +62,7 @@ def cli(
         exit(1)
 
     filters = jails + ("template=no,-",)
-    ioc_jails = ioc.Jails.JailsGenerator(
+    ioc_jails = libioc.Jails.JailsGenerator(
         logger=logger,
         host=ctx.parent.host,
         zfs=ctx.parent.zfs,
@@ -76,7 +76,7 @@ def cli(
             changed = print_function(jail.updater.apply())
             if changed is True:
                 changed_jails.append(jail)
-        except ioc.errors.UpdateFailure:
+        except libioc.errors.UpdateFailure:
             failed_jails.append(jail)
 
     if len(failed_jails) > 0:

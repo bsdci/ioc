@@ -28,28 +28,28 @@ import errno
 import click
 import os
 
-import ioc.errors
-import ioc.Logger
-import ioc.Host
-import ioc.helpers
-import ioc.Jail
-import ioc.Config.Jail.File.Fstab
+import libioc.errors
+import libioc.Logger
+import libioc.Host
+import libioc.helpers
+import libioc.Jail
+import libioc.Config.Jail.File.Fstab
 
 from .shared.jail import get_jail
 from .shared.click import IocClickContext
 
 __rootcmd__ = True
-FstabLine = ioc.Config.Jail.File.Fstab.FstabLine
+FstabLine = libioc.Config.Jail.File.Fstab.FstabLine
 
 
-def _get_relpath(path: str, jail: ioc.Jail.JailGenerator) -> str:
+def _get_relpath(path: str, jail: libioc.Jail.JailGenerator) -> str:
     if path.startswith(jail.root_path) is True:
         return path[len(jail.root_path.rstrip("/")):]
     else:
         return path
 
 
-def _get_abspath(path: str, jail: ioc.Jail.JailGenerator) -> str:
+def _get_abspath(path: str, jail: libioc.Jail.JailGenerator) -> str:
     result = str(os.path.realpath(os.path.join(
         jail.root_path,
         _get_relpath(path, jail).lstrip("/")
@@ -58,7 +58,7 @@ def _get_abspath(path: str, jail: ioc.Jail.JailGenerator) -> str:
     if result.startswith(jail.root_path):
         return result
 
-    raise ioc.errors.InsecureJailPath(
+    raise libioc.errors.InsecureJailPath(
         path=result,
         logger=jail.logger
     )
@@ -137,7 +137,7 @@ def cli_add(
             f"fstab mount added: {source} -> {desination_path} ({mount_opts})"
         )
         exit(0)
-    except ioc.errors.IocException:
+    except libioc.errors.IocException:
         exit(1)
 
 
@@ -182,7 +182,7 @@ def cli_rm(ctx: IocClickContext, source: str, jail: str) -> None:
                 del fstab[i - 1]
                 fstab.save()
                 break
-    except ioc.errors.IocException:
+    except libioc.errors.IocException:
         exit(1)
 
     if destination is None:

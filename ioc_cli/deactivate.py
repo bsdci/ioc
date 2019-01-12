@@ -25,15 +25,15 @@
 """Deactivate ZFS pools for iocage with the CLI."""
 import click
 
-import ioc.errors
-import ioc.Datasets
-import ioc.Logger
-import ioc.ZFS
+import libioc.errors
+import libioc.Datasets
+import libioc.Logger
+import libioc.ZFS
 
 __rootcmd__ = True
 
 
-@click.command(name="deactivate", help="Disable a ZFS pool for ioc.")
+@click.command(name="deactivate", help="Disable a ZFS pool for libioc.")
 @click.pass_context
 @click.argument("zpool")
 def cli(ctx, zpool):
@@ -48,7 +48,7 @@ def cli(ctx, zpool):
         exit(1)
 
     try:
-        datasets = ioc.Datasets.Datasets(
+        datasets = libioc.Datasets.Datasets(
             zfs=zfs,
             logger=logger
         )
@@ -58,5 +58,5 @@ def cli(ctx, zpool):
             logger.log(f"ZFS pool '{zpool}' deactivated")
         else:
             logger.warn(f"ZFS pool '{zpool}' is not active")
-    except ioc.errors.IocException:
+    except libioc.errors.IocException:
         exit(1)

@@ -25,10 +25,10 @@
 """Export a jail from the CLI."""
 import click
 
-import ioc.errors
-import ioc.Jail
-import ioc.Host
-import ioc.ZFS
+import libioc.errors
+import libioc.Jail
+import libioc.Host
+import libioc.ZFS
 
 from .shared.click import IocClickContext
 
@@ -46,11 +46,11 @@ def cli(
 ) -> None:
     """Restore a jail from a backup archive."""
     logger = ctx.parent.logger
-    zfs: ioc.ZFS.ZFS = ctx.parent.zfs
-    host: ioc.Host.HostGenerator = ctx.parent.host
+    zfs: libioc.ZFS.ZFS = ctx.parent.zfs
+    host: libioc.Host.HostGenerator = ctx.parent.host
     print_events = ctx.parent.print_events
 
-    ioc_jail = ioc.Jail.JailGenerator(
+    ioc_jail = libioc.Jail.JailGenerator(
         dict(name=jail),
         logger=logger,
         zfs=zfs,
@@ -64,5 +64,5 @@ def cli(
 
     try:
         print_events(ioc_jail.backup.restore(source))
-    except ioc.errors.IocException:
+    except libioc.errors.IocException:
         exit(1)

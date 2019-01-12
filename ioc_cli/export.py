@@ -26,13 +26,13 @@
 import click
 import os.path
 
-import ioc.errors
-import ioc.Filter
-import ioc.Jail
-import ioc.Jails
-import ioc.Logger
-import ioc.Releases
-import ioc.Resource
+import libioc.errors
+import libioc.Filter
+import libioc.Jail
+import libioc.Jails
+import libioc.Logger
+import libioc.Releases
+import libioc.Resource
 
 from .shared.click import IocClickContext
 
@@ -68,14 +68,14 @@ def cli(
     as the destination path.
     """
     logger = ctx.parent.logger
-    zfs: ioc.ZFS.ZFS = ctx.parent.zfs
-    host: ioc.Host.HostGenerator = ctx.parent.host
+    zfs: libioc.ZFS.ZFS = ctx.parent.zfs
+    host: libioc.Host.HostGenerator = ctx.parent.host
     print_events = ctx.parent.print_events
 
     # Recursive exports cannot be imported at the current time
     recursive = False
 
-    ioc_jail = ioc.Jail.JailGenerator(
+    ioc_jail = libioc.Jail.JailGenerator(
         jail,
         logger=logger,
         zfs=zfs,
@@ -92,5 +92,5 @@ def cli(
             standalone=standalone,
             recursive=recursive
         ))
-    except ioc.errors.IocException:
+    except libioc.errors.IocException:
         exit(1)

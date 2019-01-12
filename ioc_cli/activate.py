@@ -25,10 +25,10 @@
 """Activate zfs pools for iocage with the CLI."""
 import click
 
-import ioc.errors
-import ioc.Datasets
-import ioc.Logger
-import ioc.ZFS
+import libioc.errors
+import libioc.Datasets
+import libioc.Logger
+import libioc.ZFS
 
 __rootcmd__ = True
 
@@ -53,7 +53,7 @@ def cli(ctx, zpool, mountpoint):
         exit(1)
 
     try:
-        datasets = ioc.Datasets.Datasets(
+        datasets = libioc.Datasets.Datasets(
             zfs=zfs,
             logger=logger
         )
@@ -62,5 +62,5 @@ def cli(ctx, zpool, mountpoint):
             mountpoint=mountpoint
         )
         logger.log(f"ZFS pool '{zpool}' activated")
-    except ioc.errors.IocException:
+    except libioc.errors.IocException:
         exit(1)

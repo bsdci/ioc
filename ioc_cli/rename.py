@@ -25,7 +25,7 @@
 """Rename a jail."""
 import click
 
-import ioc.Jail
+import libioc.Jail
 
 from .shared.click import IocClickContext
 
@@ -46,13 +46,13 @@ def cli(
     print_function = ctx.parent.print_events
 
     try:
-        ioc_jail = ioc.Jail.Jail(
+        ioc_jail = libioc.Jail.Jail(
             jail,
             logger=logger,
             zfs=ctx.parent.zfs,
             host=ctx.parent.host
         )
         print_function(ioc_jail.rename(name))
-    except ioc.errors.IocException:
+    except libioc.errors.IocException:
         exit(1)
 

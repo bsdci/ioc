@@ -26,10 +26,10 @@
 import typing
 import click
 
-import ioc.Jail
-import ioc.Pkg
-import ioc.Logger
-import ioc.errors
+import libioc.Jail
+import libioc.Pkg
+import libioc.Logger
+import libioc.errors
 
 from .shared.click import IocClickContext
 
@@ -55,17 +55,17 @@ def cli(
     logger = ctx.parent.logger
 
     try:
-        ioc_jail = ioc.Jail.JailGenerator(
+        ioc_jail = libioc.Jail.JailGenerator(
             jail,
             logger=logger,
             zfs=ctx.parent.zfs,
             host=ctx.parent.host
         )
-    except ioc.errors.JailNotFound:
+    except libioc.errors.JailNotFound:
         exit(1)
 
     try:
-        pkg = ioc.Pkg.Pkg(
+        pkg = libioc.Pkg.Pkg(
             logger=logger,
             zfs=ctx.parent.zfs,
             host=ctx.parent.host
@@ -81,6 +81,6 @@ def cli(
                 packages=list(packages)
             )
         ctx.parent.print_events(events)
-    except ioc.errors.IocException:
+    except libioc.errors.IocException:
         exit(1)
 

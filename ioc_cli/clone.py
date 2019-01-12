@@ -25,9 +25,9 @@
 """Clone and promote jails."""
 import click
 
-import ioc.errors
-import ioc.ZFS
-import ioc.Jail
+import libioc.errors
+import libioc.ZFS
+import libioc.Jail
 
 from .shared.click import IocClickContext
 
@@ -59,14 +59,14 @@ def cli(
     print_function = ctx.parent.print_events
     logger = ctx.parent.logger
 
-    ioc_source_jail = ioc.Jail.JailGenerator(
+    ioc_source_jail = libioc.Jail.JailGenerator(
         dict(id=source),
         logger=logger,
         zfs=ctx.parent.zfs,
         host=ctx.parent.host
     )
 
-    ioc_destination_jail = ioc.Jail.JailGenerator(
+    ioc_destination_jail = libioc.Jail.JailGenerator(
         dict(id=destination),
         new=True,
         logger=logger,
@@ -76,5 +76,5 @@ def cli(
 
     try:
         print_function(ioc_destination_jail.clone_from_jail(ioc_source_jail))
-    except ioc.errors.IocException:
+    except libioc.errors.IocException:
         exit(1)

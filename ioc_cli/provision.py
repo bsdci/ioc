@@ -26,9 +26,9 @@
 import typing
 import click
 
-import ioc.errors
-import ioc.Jails
-import ioc.Logger
+import libioc.errors
+import libioc.Jails
+import libioc.Logger
 
 from .shared.click import IocClickContext
 from .shared.jail import set_properties
@@ -70,16 +70,16 @@ def cli(
 def _provision(
     filters: typing.Tuple[str, ...],
     temporary_config_override: typing.Tuple[str, ...],
-    zfs: ioc.ZFS.ZFS,
-    host: ioc.Host.HostGenerator,
-    logger: ioc.Logger.Logger,
+    zfs: libioc.ZFS.ZFS,
+    host: libioc.Host.HostGenerator,
+    logger: libioc.Logger.Logger,
     print_function: typing.Callable[
-        [typing.Generator[ioc.events.IocEvent, None, None]],
+        [typing.Generator[libioc.events.IocEvent, None, None]],
         None
     ]
 ) -> bool:
 
-    jails = ioc.Jails.JailsGenerator(
+    jails = libioc.Jails.JailsGenerator(
         logger=logger,
         zfs=zfs,
         host=host,
@@ -94,12 +94,12 @@ def _provision(
                 properties=temporary_config_override,
                 target=jail
             )
-        except ioc.errors.IocException:
+        except libioc.errors.IocException:
             exit(1)
 
         try:
             print_function(_execute_provisioner(jail))
-        except ioc.errors.IocException:
+        except libioc.errors.IocException:
             failed_jails.append(jail)
             continue
 
@@ -117,10 +117,10 @@ def _provision(
 
 
 def _execute_provisioner(
-    jail: 'ioc.Jail.JailsGenerator'
-) -> typing.Generator['ioc.events.IocEvent', None, None]:
+    jail: 'libioc.Jail.JailsGenerator'
+) -> typing.Generator['libioc.events.IocEvent', None, None]:
     for event in jail.provisioner.provision():
         yield event
-        if isinstance(event, ioc.events.JailCommandExecution):
+        if isinstance(event, libioc.events.JailCommandExecution):
             if event.done is True:
                 print(event.stdout)

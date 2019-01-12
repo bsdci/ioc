@@ -26,11 +26,11 @@
 import typing
 import click
 
-import ioc.errors
-import ioc.Logger
-import ioc.helpers
-import ioc.Resource
-import ioc.Jails
+import libioc.errors
+import libioc.Logger
+import libioc.helpers
+import libioc.Resource
+import libioc.Jails
 
 from .shared.jail import set_properties
 
@@ -52,8 +52,8 @@ def cli(
 ) -> None:
     """Set one or many configuration properties of one jail."""
     parent: typing.Any = ctx.parent
-    logger: ioc.Logger.Logger = parent.logger
-    host: ioc.Host.HostGenerator = parent.host
+    logger: libioc.Logger.Logger = parent.logger
+    host: libioc.Host.HostGenerator = parent.host
 
     # Defaults
     if jail == "defaults":
@@ -62,7 +62,7 @@ def cli(
                 properties=props,
                 target=host.defaults
             )
-        except ioc.errors.IocException:
+        except libioc.errors.IocException:
             exit(1)
 
         if len(updated_properties) > 0:
@@ -73,7 +73,7 @@ def cli(
 
     # Jail Properties
     filters = (f"name={jail}",)
-    ioc_jails = ioc.Jails.JailsGenerator(
+    ioc_jails = libioc.Jails.JailsGenerator(
         filters,
         host=host,
         logger=logger
@@ -81,14 +81,14 @@ def cli(
 
     updated_jail_count = 0
 
-    for ioc_jail in ioc_jails:  # type: ioc.Jail.JailGenerator
+    for ioc_jail in ioc_jails:  # type: libioc.Jail.JailGenerator
 
         try:
             updated_properties = set_properties(
                 properties=props,
                 target=ioc_jail
             )
-        except ioc.errors.IocException:
+        except libioc.errors.IocException:
             exit(1)
 
         if len(updated_properties) == 0:

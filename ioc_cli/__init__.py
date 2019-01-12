@@ -32,16 +32,16 @@ import sys
 
 import click
 
-from ioc.Logger import Logger
-from ioc.events import IocEvent
-from ioc.errors import (
+from libioc.Logger import Logger
+from libioc.events import IocEvent
+from libioc.errors import (
     InvalidLogLevel,
     IocageNotActivated,
     ZFSSourceMountpoint
 )
-from ioc.ZFS import get_zfs
-from ioc.Datasets import Datasets
-from ioc.Host import HostGenerator
+from libioc.ZFS import get_zfs
+from libioc.Datasets import Datasets
+from libioc.Host import HostGenerator
 
 logger = Logger()
 
@@ -67,7 +67,7 @@ try:
     )
 except subprocess.CalledProcessError:
     logger.error(
-        "ZFS is required to use ioc.\n"
+        "ZFS is required to use libioc.\n"
         "Try calling 'kldload zfs' as root."
     )
     exit(1)

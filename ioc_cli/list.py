@@ -27,14 +27,14 @@ import click
 import json
 import typing
 
-import ioc.errors
-import ioc.Logger
-import ioc.Host
-import ioc.Datasets
-import ioc.Resource
-import ioc.ListableResource
-import ioc.Jails
-import ioc.Releases
+import libioc.errors
+import libioc.Logger
+import libioc.Host
+import libioc.Datasets
+import libioc.Resource
+import libioc.ListableResource
+import libioc.Jails
+import libioc.Releases
 
 from .shared.output import print_table
 from .shared.click import IocClickContext
@@ -83,7 +83,7 @@ def cli(
     """List jails in various formats."""
     logger = ctx.parent.logger
     zfs = ctx.parent.zfs
-    host: ioc.Host.HostGenerator = ctx.parent.host
+    host: libioc.Host.HostGenerator = ctx.parent.host
 
     if output is not None and _long is True:
         logger.error("--output and --long can't be used together")
@@ -108,7 +108,7 @@ def cli(
 
         elif (dataset_type == "pool"):
             columns = ["name", "dataset"]
-            datasets = ioc.Datasets.Datasets(zfs=zfs, logger=logger)
+            datasets = libioc.Datasets.Datasets(zfs=zfs, logger=logger)
             resources = [
                 dict(
                     name=name,
@@ -119,7 +119,7 @@ def cli(
         else:
 
             if (dataset_type == "base"):
-                resources_class = ioc.Releases.ReleasesGenerator
+                resources_class = libioc.Releases.ReleasesGenerator
                 columns = ["full_name"]
             elif (dataset_type == "datasets"):
                 resources_class = None
@@ -130,7 +130,7 @@ def cli(
                     in host.datasets.items()
                 ]
             else:
-                resources_class = ioc.Jails.JailsGenerator
+                resources_class = libioc.Jails.JailsGenerator
                 columns = _list_output_comumns(output, _long)
                 if dataset_type == "template":
                     filters += ("template=yes",)
@@ -146,7 +146,7 @@ def cli(
                     filters=filters
                 )
 
-    except ioc.errors.IocException:
+    except libioc.errors.IocException:
         exit(1)
 
     if output_format == "list":
@@ -162,7 +162,7 @@ def cli(
 def _print_table(
     resources: typing.Generator[
         typing.Union[
-            ioc.ListableResource.ListableResource,
+            libioc.ListableResource.ListableResource,
             typing.List[typing.Dict[str, str]]
         ],
         None,
@@ -183,7 +183,7 @@ def _print_table(
 def _print_list(
     resources: typing.Generator[
         typing.Union[
-            ioc.ListableResource.ListableResource,
+            libioc.ListableResource.ListableResource,
             typing.List[typing.Dict[str, str]]
         ],
         None,
@@ -204,7 +204,7 @@ def _print_list(
 def _print_json(
     resources: typing.Generator[
         typing.Union[
-            ioc.ListableResource.ListableResource,
+            libioc.ListableResource.ListableResource,
             typing.List[typing.Dict[str, str]]
         ],
         None,
@@ -232,14 +232,14 @@ def _print_json(
 
 def _lookup_resource_values(
     resource: typing.Union[
-        'ioc.Resource.Resource',
+        'libioc.Resource.Resource',
         typing.Dict[str, str]
     ],
     columns: typing.List[str]
 ) -> typing.List[str]:
-    is_resorce = isinstance(resource, ioc.Resource.Resource)
+    is_resorce = isinstance(resource, libioc.Resource.Resource)
     if is_resorce and ("getstring" in resource.__dir__()):
-        _resource = resource  # type: ioc.Resource.Resource
+        _resource = resource  # type: libioc.Resource.Resource
         return list(map(
             lambda column: str(_resource.getstring(column)),
             columns

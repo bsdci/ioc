@@ -27,8 +27,8 @@ import click
 import typing
 import shlex
 
-import ioc.Jail
-import ioc.Logger
+import libioc.Jail
+import libioc.Logger
 
 from .shared.click import IocClickContext
 
@@ -87,7 +87,7 @@ def cli(
             shlex.quote(user_command)
         ]
 
-    ioc_jail = ioc.Jail.JailGenerator(
+    ioc_jail = libioc.Jail.JailGenerator(
         jail,
         logger=logger,
         zfs=ctx.parent.zfs,
@@ -114,5 +114,5 @@ def cli(
                 continue
         else:
             ioc_jail.passthru(command_list)
-    except ioc.errors.IocException:
+    except libioc.errors.IocException:
         exit(1)

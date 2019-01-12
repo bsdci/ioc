@@ -26,8 +26,8 @@
 import typing
 import click
 
-import ioc.Jail
-import ioc.Logger
+import libioc.Jail
+import libioc.Logger
 
 from .shared.click import IocClickContext
 from .shared.jail import get_jail
@@ -74,7 +74,7 @@ def _cli_create(ctx: IocClickContext, identifier: str) -> None:
             require_full_identifier=True
         )
         ioc_jail.snapshots.create(snapshot_name)
-    except ioc.errors.IocException:
+    except libioc.errors.IocException:
         pass
 
 
@@ -98,7 +98,7 @@ def cli_rollback(
             require_full_identifier=True
         )
         ioc_jail.snapshots.rollback(snapshot_name, force=force)
-    except ioc.errors.IocException:
+    except libioc.errors.IocException:
         pass
 
 
@@ -123,7 +123,7 @@ def _cli_list(ctx: IocClickContext, jail: str) -> None:
         columns = ["NAME"]
         data = [[x.name.split("@", maxsplit=1)[1]] for x in ioc_jail.snapshots]
         print_table(data, columns)
-    except ioc.errors.IocException:
+    except libioc.errors.IocException:
         pass
 
 
@@ -142,7 +142,7 @@ def cli_remove(ctx: IocClickContext, identifier: str) -> None:
             require_full_identifier=True
         )
         ioc_jail.snapshots.delete(snapshot_name)
-    except ioc.errors.IocException:
+    except libioc.errors.IocException:
         pass
 
 
@@ -200,14 +200,14 @@ def _parse_identifier(
     ctx: IocClickContext,
     identifier: str,
     require_full_identifier: bool=False
-) -> typing.Tuple[ioc.Jail.JailGenerator, typing.Optional[str]]:
+) -> typing.Tuple[libioc.Jail.JailGenerator, typing.Optional[str]]:
 
     snapshot_name: typing.Optional[str] = None
     try:
         jail, snapshot_name = identifier.split("@")
     except ValueError:
         if require_full_identifier is True:
-            raise ioc.errors.InvalidSnapshotIdentifier(
+            raise libioc.errors.InvalidSnapshotIdentifier(
                 identifier=identifier,
                 logger=ctx.parent.logger
             )

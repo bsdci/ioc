@@ -26,10 +26,10 @@
 import typing
 import click
 
-import ioc.errors
-import ioc.Host
-import ioc.Jail
-import ioc.Logger
+import libioc.errors
+import libioc.Host
+import libioc.Jail
+import libioc.Logger
 
 from .shared.click import IocClickContext
 
@@ -59,7 +59,7 @@ def cli(
 ) -> None:
     """Get a list of jails and print the property."""
     logger = ctx.parent.logger
-    host = ioc.Host.Host(logger=logger)
+    host = libioc.Host.Host(logger=logger)
 
     _prop = None if len(prop) == 0 else prop[0]
 
@@ -78,12 +78,12 @@ def cli(
     else:
         lookup_method = _lookup_jail_value
         try:
-            source_resource = ioc.Jail.Jail(
+            source_resource = libioc.Jail.Jail(
                 jail,
                 host=host,
                 logger=logger
             )
-        except ioc.errors.JailNotFound:
+        except libioc.errors.JailNotFound:
             exit(1)
 
     if (_prop is None) and (jail == "") and not _all:
@@ -114,14 +114,14 @@ def _print_property(key: str, value: str) -> None:
 
 
 def _lookup_config_value(
-    resource: 'ioc.Resource.Resource',
+    resource: 'libioc.Resource.Resource',
     key: str
 ) -> str:
-    return str(ioc.helpers.to_string(resource.config[key]))
+    return str(libioc.helpers.to_string(resource.config[key]))
 
 
 def _lookup_jail_value(
-    resource: 'ioc.LaunchableResource.LaunchableResource',
+    resource: 'libioc.LaunchableResource.LaunchableResource',
     key: str
 ) -> str:
 
@@ -130,4 +130,4 @@ def _lookup_jail_value(
     else:
         value = resource.getstring(key)
 
-    return str(ioc.helpers.to_string(value))
+    return str(libioc.helpers.to_string(value))

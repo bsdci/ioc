@@ -26,18 +26,18 @@
 import typing
 import click.core
 
-import ioc.events
-import ioc.Logger
-import ioc.Host
+import libioc.events
+import libioc.Logger
+import libioc.Host
 
 
 class IocClickContext(click.core.Context):
     """ioc ctx for Click CLI."""
 
-    logger: ioc.Logger.Logger
-    host: ioc.Host.Host
+    logger: libioc.Logger.Logger
+    host: libioc.Host.Host
     parent: 'IocClickContext'
     print_events: typing.Callable[
-        [typing.Generator[ioc.events.IocEvent, None, None]],
+        [typing.Generator[libioc.events.IocEvent, None, None]],
         None
     ]

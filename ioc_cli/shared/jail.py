@@ -25,9 +25,9 @@
 """Get a specific jails with this CLI helper function."""
 import typing
 
-import ioc.errors
-import ioc.Jail
-import ioc.Logger
+import libioc.errors
+import libioc.Jail
+import libioc.Logger
 
 from .click import IocClickContext
 
@@ -35,21 +35,21 @@ from .click import IocClickContext
 def get_jail(
     jail_name: str,
     ctx: IocClickContext
-) -> ioc.Jail.JailGenerator:
+) -> libioc.Jail.JailGenerator:
     """Return the jail matching the given name."""
     try:
-        return ioc.Jail.JailGenerator(
+        return libioc.Jail.JailGenerator(
             jail_name,
             logger=ctx.logger,
             host=ctx.host
         )
-    except ioc.errors.IocException:
+    except libioc.errors.IocException:
         exit(1)
 
 
 def set_properties(
     properties: typing.Iterable[str],
-    target: 'ioc.LaunchableResource.LaunchableResource'
+    target: 'libioc.LaunchableResource.LaunchableResource'
 ) -> set:
     """Set a bunch of jail properties from a Click option tuple."""
     updated_properties = set()
@@ -66,7 +66,7 @@ def set_properties(
             try:
                 del target.config[key]
                 updated_properties.add(key)
-            except (ioc.errors.IocException, KeyError):
+            except (libioc.errors.IocException, KeyError):
                 pass
 
     if len(updated_properties) > 0:

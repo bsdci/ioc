@@ -25,9 +25,9 @@
 """Console subcommand for the CLI."""
 import click
 
-import ioc.Jail
-import ioc.Logger
-import ioc.errors
+import libioc.Jail
+import libioc.Logger
+import libioc.errors
 
 __rootcmd__ = True
 
@@ -41,14 +41,14 @@ def cli(ctx, jail, start):
     logger = ctx.parent.logger
 
     try:
-        ioc_jail = ioc.Jail.JailGenerator(
+        ioc_jail = libioc.Jail.JailGenerator(
             jail,
             logger=logger,
             zfs=ctx.parent.zfs,
             host=ctx.parent.host
         )
         ioc_jail.state.query()
-    except ioc.errors.JailNotFound:
+    except libioc.errors.JailNotFound:
         exit(1)
 
     try:
@@ -57,6 +57,6 @@ def cli(ctx, jail, start):
                 ctx.parent.print_events(ioc_jail.start())
 
         ioc_jail.exec_console()
-    except ioc.errors.IocException:
+    except libioc.errors.IocException:
         exit(1)
 

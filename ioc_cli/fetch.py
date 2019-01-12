@@ -26,10 +26,10 @@
 import click
 import typing
 
-import ioc.Host
-import ioc.Prompts
-import ioc.Release
-import ioc.errors
+import libioc.Host
+import libioc.Prompts
+import libioc.Release
+import libioc.errors
 
 from .shared.click import IocClickContext
 
@@ -94,30 +94,30 @@ def cli(  # noqa: T484
     logger = ctx.parent.logger
     host = ctx.parent.host
     zfs = ctx.parent.zfs
-    prompts = ioc.Prompts.Prompts(host=host, logger=logger)
+    prompts = libioc.Prompts.Prompts(host=host, logger=logger)
 
     release_input = kwargs["release"]
     if release_input is None:
         try:
             release = prompts.release()
-        except ioc.errors.DefaultReleaseNotFound:
+        except libioc.errors.DefaultReleaseNotFound:
             exit(1)
     else:
         try:
-            release = ioc.Release.ReleaseGenerator(
+            release = libioc.Release.ReleaseGenerator(
                 name=release_input,
                 host=host,
                 zfs=zfs,
                 logger=logger
             )
-        except ioc.errors.IocException:
+        except libioc.errors.IocException:
             exit(1)
 
     if kwargs["copy_basejail_only"] is True:
         try:
             release.update_base_release()
             exit(0)
-        except ioc.errors.IocException:
+        except libioc.errors.IocException:
             exit(1)
 
     url_or_files_selected = False
@@ -140,7 +140,7 @@ def cli(  # noqa: T484
             update=kwargs["update"],
             fetch_updates=fetch_updates
         ))
-    except ioc.errors.IocException:
+    except libioc.errors.IocException:
         exit(1)
 
     exit(0)

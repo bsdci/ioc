@@ -26,9 +26,9 @@
 import typing
 import click
 
-import ioc.errors
-import ioc.Jails
-import ioc.Logger
+import libioc.errors
+import libioc.Jails
+import libioc.Logger
 
 from .shared.click import IocClickContext
 from .shared.jail import set_properties
@@ -89,18 +89,18 @@ def cli(
 
 
 def _autostart(
-    zfs: ioc.ZFS.ZFS,
-    host: ioc.Host.HostGenerator,
-    logger: ioc.Logger.Logger,
+    zfs: libioc.ZFS.ZFS,
+    host: libioc.Host.HostGenerator,
+    logger: libioc.Logger.Logger,
     print_function: typing.Callable[
-        [typing.Generator[ioc.events.IocEvent, None, None]],
+        [typing.Generator[libioc.events.IocEvent, None, None]],
         None
     ]
 ) -> None:
 
     filters = ("boot=yes", "running=no", "template=no,-",)
 
-    ioc_jails = ioc.Jails.Jails(
+    ioc_jails = libioc.Jails.Jails(
         zfs=zfs,
         host=host,
         logger=logger,
@@ -120,7 +120,7 @@ def _autostart(
                 logger.log(f"{jail.name} is already running - skipping start")
                 continue
             jail.start()
-        except ioc.errors.IocException:
+        except libioc.errors.IocException:
             failed_jails.append(jail)
             continue
 
@@ -135,18 +135,18 @@ def _autostart(
 def _normal(
     filters: typing.Tuple[str, ...],
     temporary_config_override: typing.Tuple[str, ...],
-    zfs: ioc.ZFS.ZFS,
-    host: ioc.Host.HostGenerator,
-    logger: ioc.Logger.Logger,
+    zfs: libioc.ZFS.ZFS,
+    host: libioc.Host.HostGenerator,
+    logger: libioc.Logger.Logger,
     print_function: typing.Callable[
-        [typing.Generator[ioc.events.IocEvent, None, None]],
+        [typing.Generator[libioc.events.IocEvent, None, None]],
         None
     ]
 ) -> bool:
 
     filters += ("template=no,-",)
 
-    jails = ioc.Jails.JailsGenerator(
+    jails = libioc.Jails.JailsGenerator(
         logger=logger,
         zfs=zfs,
         host=host,
@@ -162,7 +162,7 @@ def _normal(
                 properties=temporary_config_override,
                 target=jail
             )
-        except ioc.errors.IocException:
+        except libioc.errors.IocException:
             exit(1)
         try:
             jail.require_jail_not_template()
@@ -171,7 +171,7 @@ def _normal(
                 skipped_jails.append(jail)
                 continue
             print_function(jail.start())
-        except ioc.errors.IocException:
+        except libioc.errors.IocException:
             failed_jails.append(jail)
             continue
 

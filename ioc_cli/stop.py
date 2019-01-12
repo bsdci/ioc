@@ -26,9 +26,9 @@
 import typing
 import click
 
-import ioc.errors
-import ioc.Jails
-import ioc.Logger
+import libioc.errors
+import libioc.Jails
+import libioc.Logger
 
 from .shared.click import IocClickContext
 
@@ -87,11 +87,11 @@ def cli(
 
 def _normal(
     filters: typing.Tuple[str, ...],
-    zfs: ioc.Host.HostGenerator,
-    host: ioc.Host.HostGenerator,
-    logger: ioc.Logger.Logger,
+    zfs: libioc.Host.HostGenerator,
+    host: libioc.Host.HostGenerator,
+    logger: libioc.Logger.Logger,
     print_function: typing.Callable[
-        [typing.Generator[ioc.events.IocEvent, None, None]],
+        [typing.Generator[libioc.events.IocEvent, None, None]],
         None
     ],
     force: bool
@@ -99,7 +99,7 @@ def _normal(
 
     filters += ("template=no,-",)
 
-    jails = ioc.Jails.JailsGenerator(
+    jails = libioc.Jails.JailsGenerator(
         zfs=zfs,
         host=host,
         logger=logger,
@@ -111,7 +111,7 @@ def _normal(
     for jail in jails:
         try:
             print_function(jail.stop(force=force))
-        except ioc.errors.IocException:
+        except libioc.errors.IocException:
             failed_jails.append(jail)
             continue
 
@@ -130,11 +130,11 @@ def _normal(
 
 
 def _autostop(
-    zfs: ioc.ZFS.ZFS,
-    host: ioc.Host.HostGenerator,
-    logger: ioc.Logger.Logger,
+    zfs: libioc.ZFS.ZFS,
+    host: libioc.Host.HostGenerator,
+    logger: libioc.Logger.Logger,
     print_function: typing.Callable[
-        [typing.Generator[ioc.events.IocEvent, None, None]],
+        [typing.Generator[libioc.events.IocEvent, None, None]],
         None
     ],
     force: bool=True
@@ -142,7 +142,7 @@ def _autostop(
 
     filters = ("running=yes", "template=no,-",)
 
-    ioc_jails = ioc.Jails.Jails(
+    ioc_jails = libioc.Jails.Jails(
         host=host,
         zfs=zfs,
         logger=logger,
@@ -159,7 +159,7 @@ def _autostop(
     for jail in jails:
         try:
             jail.stop(force=force)
-        except ioc.errors.IocException:
+        except libioc.errors.IocException:
             failed_jails.append(jail)
             continue
 

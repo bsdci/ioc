@@ -26,12 +26,12 @@
 import click
 import typing
 
-import ioc.errors
-import ioc.Host
-import ioc.Jail
-import ioc.Logger
-import ioc.Release
-import ioc.ZFS
+import libioc.errors
+import libioc.Host
+import libioc.Jail
+import libioc.Logger
+import libioc.Release
+import libioc.ZFS
 
 from .shared.click import IocClickContext
 
@@ -54,7 +54,7 @@ def validate_count(
 
             return int(value)
         except ValueError:
-            logger = ioc.Logger.Logger()
+            logger = libioc.Logger.Logger()
             logger.error(f"{value} is not a valid integer.")
             exit(1)
     else:
@@ -121,8 +121,8 @@ def cli(
 ) -> None:
     """Create iocage jails."""
     logger = ctx.parent.logger
-    zfs: ioc.ZFS.ZFS = ctx.parent.zfs
-    host: ioc.Host.Host = ctx.parent.host
+    zfs: libioc.ZFS.ZFS = ctx.parent.zfs
+    host: libioc.Host.Host = ctx.parent.host
 
     jail_data: typing.Dict[str, typing.Any] = {}
 
@@ -134,11 +134,11 @@ def cli(
         release = host.release_version
 
     try:
-        resource_selector = ioc.ResourceSelector.ResourceSelector(
+        resource_selector = libioc.ResourceSelector.ResourceSelector(
             name,
             logger=logger
         )
-    except ioc.errors.IocException:
+    except libioc.errors.IocException:
         exit(1)
 
     jail_data["name"] = resource_selector.name
@@ -146,7 +146,7 @@ def cli(
 
     try:
         if release is not None:
-            resource = ioc.Release.ReleaseGenerator(
+            resource = libioc.Release.ReleaseGenerator(
                 name=release,
                 root_datasets_name=root_datasets_name,
                 logger=logger,
@@ -174,7 +174,7 @@ def cli(
                     )
                     resource.fetch()
         elif template is not None:
-            resource = ioc.Jail.JailGenerator(
+            resource = libioc.Jail.JailGenerator(
                 template,
                 root_datasets_name=root_datasets_name,
                 logger=logger,
@@ -196,13 +196,13 @@ def cli(
                 except (ValueError, KeyError):
                     logger.error(f"Invalid property {prop}")
                     exit(1)
-    except ioc.errors.IocException:
+    except libioc.errors.IocException:
         exit(1)
 
     errors = False
     for i in range(count):
 
-        jail = ioc.Jail.JailGenerator(
+        jail = libioc.Jail.JailGenerator(
             jail_data,
             root_datasets_name=root_datasets_name,
             logger=logger,
@@ -220,7 +220,7 @@ def cli(
                 f"{msg_source}!{suffix}"
             )
             logger.log(msg)
-        except ioc.errors.IocException:
+        except libioc.errors.IocException:
             exit(1)
 
     exit(int(errors))

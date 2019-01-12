@@ -26,13 +26,13 @@
 import click
 import typing
 
-import ioc.errors
-import ioc.Filter
-import ioc.Jail
-import ioc.Jails
-import ioc.Logger
-import ioc.Releases
-import ioc.Resource
+import libioc.errors
+import libioc.Filter
+import libioc.Jail
+import libioc.Jails
+import libioc.Logger
+import libioc.Releases
+import libioc.Resource
 
 from .shared.click import IocClickContext
 
@@ -86,13 +86,13 @@ def cli(
     release = (dataset_type == "release") is True
 
     resources_class: typing.Union[
-        typing.Type[ioc.Releases.ReleasesGenerator],
-        typing.Type[ioc.Jails.JailsGenerator]
+        typing.Type[libioc.Releases.ReleasesGenerator],
+        typing.Type[libioc.Jails.JailsGenerator]
     ]
     if release is True:
-        resources_class = ioc.Releases.ReleasesGenerator
+        resources_class = libioc.Releases.ReleasesGenerator
     else:
-        resources_class = ioc.Jails.JailsGenerator
+        resources_class = libioc.Jails.JailsGenerator
 
     resources = list(resources_class(
         filters=filters,
@@ -125,7 +125,7 @@ def cli(
         try:
             ctx.parent.print_events(item.destroy())
             logger.screen(f"{old_mountpoint} destroyed")
-        except ioc.errors.IocException:
+        except libioc.errors.IocException:
             failed_items.append(item)
 
     if len(failed_items) > 0:

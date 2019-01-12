@@ -26,10 +26,10 @@
 import typing
 import click
 
-import ioc.errors
-import ioc.events
-import ioc.Jails
-import ioc.Logger
+import libioc.errors
+import libioc.events
+import libioc.Jails
+import libioc.Logger
 
 from .shared.click import IocClickContext
 
@@ -71,7 +71,7 @@ def cli(
         logger.error("No jail selector provided")
         exit(1)
 
-    ioc_jails = ioc.Jails.JailsGenerator(
+    ioc_jails = libioc.Jails.JailsGenerator(
         host=ctx.parent.host,
         zfs=ctx.parent.zfs,
         logger=logger,

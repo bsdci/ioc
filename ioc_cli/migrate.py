@@ -25,26 +25,26 @@
 import typing
 import click
 
-import ioc.events
-import ioc.errors
-import ioc.helpers
-import ioc.Jails
-import ioc.Logger
+import libioc.events
+import libioc.errors
+import libioc.helpers
+import libioc.Jails
+import libioc.Logger
 
 from .shared.click import IocClickContext
 
 __rootcmd__ = True
 
 
-class JailMigrationEvent(ioc.events.IocEvent):
+class JailMigrationEvent(libioc.events.IocEvent):
     """CLI event that occurs when a jail is migrated from legacy format."""
 
     def __init__(
         self,
-        jail: 'ioc.Jail.JailGenerator'
+        jail: 'libioc.Jail.JailGenerator'
     ) -> None:
         self.identifier = jail.full_name
-        ioc.events.IocEvent.__init__(self)
+        libioc.events.IocEvent.__init__(self)
 
 
 @click.command(name="migrate", help="Migrate jails to the latest format.")
@@ -56,12 +56,12 @@ def cli(
 ) -> None:
     """Start one or many jails."""
     logger = ctx.parent.logger
-    zfs = ioc.ZFS.get_zfs(logger=logger)
-    host = ioc.Host.HostGenerator(logger=logger, zfs=zfs)
+    zfs = libioc.ZFS.get_zfs(logger=logger)
+    host = libioc.Host.HostGenerator(logger=logger, zfs=zfs)
 
     filters = jails + ("template=no,-",)
 
-    ioc_jails = ioc.Jails.JailsGenerator(
+    ioc_jails = libioc.Jails.JailsGenerator(
         filters,
         logger=logger,
         host=host,
@@ -81,11 +81,11 @@ def cli(
 
 
 def _migrate_jails(
-    jails: 'ioc.Jails.JailsGenerator',
-    logger: 'ioc.Logger.Logger',
-    host: 'ioc.Host.HostGenerator',
-    zfs: 'ioc.ZFS.ZFS'
-) -> typing.Generator['ioc.events.IocEvent', None, None]:
+    jails: 'libioc.Jails.JailsGenerator',
+    logger: 'libioc.Logger.Logger',
+    host: 'libioc.Host.HostGenerator',
+    zfs: 'libioc.ZFS.ZFS'
+) -> typing.Generator['libioc.events.IocEvent', None, None]:
 
     for jail in jails:
 
@@ -97,13 +97,13 @@ def _migrate_jails(
             continue
 
         if jail.running is True:
-            yield event.fail(ioc.errors.JailAlreadyRunning(
+            yield event.fail(libioc.errors.JailAlreadyRunning(
                 jail=jail,
                 logger=logger
             ))
             continue
 
-        if ioc.helpers.validate_name(jail.config["tag"]):
+        if libioc.helpers.validate_name(jail.config["tag"]):
             name = jail.config["tag"]
             temporary_name = name
         else:
@@ -111,7 +111,7 @@ def _migrate_jails(
             temporary_name = "import-" + str(hash(name) % (1 << 32))
 
         try:
-            new_jail = ioc.Jail.JailGenerator(
+            new_jail = libioc.Jail.JailGenerator(
                 dict(name=temporary_name),
                 root_datasets_name=jail.root_datasets_name,
                 new=True,
@@ -120,13 +120,13 @@ def _migrate_jails(
                 host=host
             )
             if new_jail.exists is True:
-                raise ioc.errors.JailAlreadyExists(
+                raise libioc.errors.JailAlreadyExists(
                     jail=new_jail,
                     logger=logger
                 )
 
             def _destroy_unclean_migration() -> typing.Generator[
-                'ioc.events.IocEvents',
+                'libioc.events.IocEvents',
                 None,
                 None
             ]:
@@ -149,7 +149,7 @@ def _migrate_jails(
                 event_scope=event.scope
             )
 
-        except ioc.errors.IocException as e:
+        except libioc.errors.IocException as e:
             yield event.fail(e)
             continue
 
