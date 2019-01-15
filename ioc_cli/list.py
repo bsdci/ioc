@@ -238,17 +238,21 @@ def _lookup_resource_values(
     columns: typing.List[str]
 ) -> typing.List[str]:
     is_resorce = isinstance(resource, libioc.Resource.Resource)
-    if is_resorce and ("getstring" in resource.__dir__()):
-        _resource = resource  # type: libioc.Resource.Resource
-        return list(map(
-            lambda column: str(_resource.getstring(column)),
-            columns
-        ))
-    else:
-        return list(map(
-            lambda column: str(resource[column]),
-            columns
-        ))
+
+    try:
+        if is_resorce and ("getstring" in resource.__dir__()):
+            _resource = resource  # type: libioc.Resource.Resource
+            return list(map(
+                lambda column: str(_resource.getstring(column)),
+                columns
+            ))
+        else:
+            return list(map(
+                lambda column: str(resource[column]),
+                columns
+            ))
+    except libioc.errors.UnknownConfigProperty:
+        exit(1)
 
 
 def _list_output_comumns(
