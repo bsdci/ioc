@@ -49,7 +49,8 @@ def get_jail(
 
 def set_properties(
     properties: typing.Iterable[str],
-    target: 'libioc.LaunchableResource.LaunchableResource'
+    target: 'libioc.LaunchableResource.LaunchableResource',
+    autosave: bool=True
 ) -> set:
     """Set a bunch of jail properties from a Click option tuple."""
     updated_properties = set()
@@ -69,7 +70,7 @@ def set_properties(
             except (libioc.errors.IocException, KeyError):
                 pass
 
-    if len(updated_properties) > 0:
+    if (len(updated_properties) > 0) and (autosave is True):
         target.save()
 
     return updated_properties

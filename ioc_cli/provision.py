@@ -92,7 +92,8 @@ def _provision(
         try:
             set_properties(
                 properties=temporary_config_override,
-                target=jail
+                target=jail,
+                autosave=False
             )
         except libioc.errors.IocException:
             exit(1)
