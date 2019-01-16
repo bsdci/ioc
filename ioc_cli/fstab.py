@@ -79,13 +79,47 @@ def _get_abspath(path: str, jail: libioc.Jail.JailGenerator) -> str:
     required=False
 )
 @click.argument("jail", nargs=1, required=True)
-@click.option("--read-write", "-rw", is_flag=True, default=False)
+@click.option(
+    "--options", "-o",
+    "mntops",
+    default="ro",
+    required=False,
+    help="Mount options."
+)
+@click.option(
+    "--type", "-t",
+    "vfstype",
+    default="nullfs",
+    required=False,
+    help="Mount filesystem type."
+)
+@click.option(
+    "--freq",
+    default=0,
+    required=False,
+    help="Number of days between dumps of the filesystem."
+)
+@click.option(
+    "--passno",
+    default=0,
+    required=False,
+    help="Order of filesystem and quota checks on reboot."
+)
+@click.option(
+    "--comment", "-c",
+    required=False,
+    help="Add a comment to the fstab line."
+)
 def cli_add(
     ctx: IocClickContext,
     source: str,
     destination: typing.Tuple[str],
     jail: str,
-    read_write: bool
+    mntops: str,
+    vfstype: str,
+    freq: int,
+    passno: int,
+    comment: typing.Optional[str]
 ) -> None:
     """Add lines to a jails fstab file."""
     ioc_jail = get_jail(jail, ctx.parent)
@@ -95,20 +129,25 @@ def cli_add(
     else:
         desination_path = destination[0]
 
-    if os.path.exists(source) is False:
-        ctx.parent.logger.error(
-            f"The mount source {source} is does not exist"
-        )
-        exit(1)
+    try:
+        source = libioc.Types.AbsolutePath(source)
+        if os.path.exists(source) is False:
+            ctx.parent.logger.error(
+                f"The mount source {source} is does not exist"
+            )
+            exit(1)
 
-    if os.path.isdir(source) is False:
-        ctx.parent.logger.error(
-            f"The mount source {source} is not a directory"
-        )
-        exit(1)
+        if os.path.isdir(source) is False:
+            ctx.parent.logger.error(
+                f"The mount source {source} is not a directory"
+            )
+            exit(1)
+        ctx.parent.logger.spam("mount source is an absolute path that exists")
+    except:
+        ctx.parent.logger.spam("mount source is not an absolute path")
+
 
     try:
-        mount_opts = "rw" if read_write is True else "ro"
         desination_path = _get_abspath(desination_path, ioc_jail)
 
         fstab = ioc_jail.fstab
@@ -116,11 +155,11 @@ def cli_add(
         fstab.new_line(
             source=source,
             destination=desination_path,
-            type="nullfs",
-            options=mount_opts,
-            dump="0",
-            passnum="0",
-            comment=None
+            type=vfstype,
+            options=mntops,
+            freq=int(freq),
+            passno=int(passno),
+            comment=comment
         )
 
         # ensure destination directory exists
@@ -134,7 +173,7 @@ def cli_add(
 
         fstab.save()
         ctx.parent.logger.log(
-            f"fstab mount added: {source} -> {desination_path} ({mount_opts})"
+            f"fstab mount added: {source} -> {desination_path} ({mntops})"
         )
         exit(0)
     except libioc.errors.IocException:
