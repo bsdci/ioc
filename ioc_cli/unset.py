@@ -59,9 +59,7 @@ def cli(
 
     if jail == "defaults":
         source_resource = host.defaults
-        delete_method = _delete_config_value
     else:
-        delete_method = _delete_jail_value
         try:
             source_resource = libioc.Jail.Jail(
                 jail,
@@ -81,7 +79,7 @@ def cli(
     if _prop:
         for p in _prop:
             try:
-                delete_method(source_resource, _prop)
+                del source_resource.config[_prop]
             except KeyError:
                 logger.error(f"Unknown property '{_prop}'")
                 exit(1)
@@ -90,16 +88,3 @@ def cli(
 
         source_resource.save()
 
-
-def _delete_config_value(
-    resource: 'libioc.Resource.Resource',
-    key: str
-) -> None:
-    del resource.config[key]
-
-
-def _delete_jail_value(
-    resource: 'libioc.LaunchableResource.LaunchableResource',
-    key: str
-) -> None:
-    del resource.config[key]
