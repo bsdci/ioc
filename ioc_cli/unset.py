@@ -79,13 +79,16 @@ def cli(
         exit(1)
 
     if _prop:
-        try:
-            delete_method(source_resource, _prop)
-        except KeyError:
-            logger.error(f"Unknown property '{_prop}'")
-            exit(1)
+        for p in _prop:
+            try:
+                delete_method(source_resource, _prop)
+            except KeyError:
+                logger.error(f"Unknown property '{_prop}'")
+                exit(1)
 
-        print(_prop)
+            print(f"Deleting property '{_prop}'")
+
+        source_resource.save()
 
 
 def _delete_config_value(
