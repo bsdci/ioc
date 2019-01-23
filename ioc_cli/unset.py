@@ -55,7 +55,7 @@ def cli(
     logger = ctx.parent.logger
     host = libioc.Host.Host(logger=logger)
 
-    _prop = None if len(prop) == 0 else prop[0]
+    _prop = None if len(prop) == 0 else prop
 
     if jail == "defaults":
         source_resource = host.defaults
@@ -79,12 +79,12 @@ def cli(
     if _prop:
         for p in _prop:
             try:
-                del source_resource.config[_prop]
+                del source_resource.config[p]
             except KeyError:
-                logger.error(f"Unknown property '{_prop}'")
+                logger.error(f"Unknown property '{p}'")
                 exit(1)
 
-            print(f"Deleting property '{_prop}'")
+            print(f"Deleting property '{p}'")
 
         source_resource.save()
 
