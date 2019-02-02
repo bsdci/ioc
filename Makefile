@@ -1,5 +1,6 @@
 deps:
 	# pkg install -q -y py36-ioc
+	python3.6 -m ensurepip
 	python3.6 -m pip install -Ur requirements.txt
 	git submodule init
 	git submodule update
