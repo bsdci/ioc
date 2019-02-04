@@ -2,16 +2,18 @@ deps:
 	# pkg install -q -y py36-ioc
 	python3.6 -m ensurepip
 	python3.6 -m pip install -Ur requirements.txt
+install-libioc:
 	git submodule init
 	git submodule update
-	cd .libioc/; make install
-install: deps
+	make -C .libioc/ install
+install-ioc: deps
 	python3.6 -m pip install -U .
 	@if [ -f /usr/local/etc/init.d ]; then \
 		install -m 0755 rc.d/ioc /usr/local/etc/init.d; \
 	else \
 		install -m 0755 rc.d/ioc /usr/local/etc/rc.d; \
 	fi
+install: install-libioc install-ioc
 install-dev: deps
 	if [ "`uname`" = "FreeBSD" ]; then pkg install -y gmake; fi
 	python3.6 -m pip install -Ur requirements-dev.txt
