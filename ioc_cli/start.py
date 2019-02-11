@@ -119,6 +119,9 @@ def _autostart(
             if jail.running is True:
                 logger.log(f"{jail.name} is already running - skipping start")
                 continue
+            elif jail.hostid_check_ok is False:
+                logger.log(f"{jail.name} hostid mismatch - skipping start")
+                continue
             jail.start()
         except libioc.errors.IocException:
             failed_jails.append(jail)
@@ -169,6 +172,10 @@ def _normal(
             jail.require_jail_not_template()
             if jail.running is True:
                 logger.log(f"{jail.name} is already running - skipping start")
+                skipped_jails.append(jail)
+                continue
+            elif jail.hostid_check_ok is False:
+                logger.log(f"{jail.name} hostid mismatch - skipping start")
                 skipped_jails.append(jail)
                 continue
             print_function(jail.start())
