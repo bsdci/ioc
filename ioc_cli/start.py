@@ -189,9 +189,12 @@ def _normal(
     if len(failed_jails) > 0:
         return False
 
-    if (len(changed_jails) == 0) and (len(skipped_jails) == 0):
+    if len(changed_jails) == 0:
         jails_input = " ".join(list(filters))
-        logger.error(f"No jails started your input: {jails_input}")
+        if len(skipped_jails) == 0:
+            logger.error(f"No jails matched your input: {jails_input}")
+        else:
+            logger.error(f"No jails were started: {jails_input}")
         return False
 
     return True
