@@ -120,7 +120,6 @@ def cli(
 
         if (not release and force and item.running) is True:
             ctx.parent.print_events(item.stop(force=True))
-            item.state.query()
 
         try:
             ctx.parent.print_events(item.destroy())

@@ -93,7 +93,6 @@ def cli(
         zfs=ctx.parent.zfs,
         host=ctx.parent.host
     )
-    ioc_jail.state.query()
 
     if not ioc_jail.exists:
         logger.error(f"The jail {ioc_jail.humanreadable_name} does not exist")

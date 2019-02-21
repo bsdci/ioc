@@ -47,7 +47,6 @@ def cli(ctx, jail, start):
             zfs=ctx.parent.zfs,
             host=ctx.parent.host
         )
-        ioc_jail.state.query()
     except libioc.errors.JailNotFound:
         exit(1)
 
