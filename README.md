@@ -26,7 +26,9 @@ cd ioc
 make install
 ```
 
-At the current time ioc is not packaged or available in FreeBSD ports.
+At the current time ioc is not packaged or available in FreeBSD ports yet. A request for [sysutilc/ioc](https://bugs.freebsd.org/bugzilla/show_bug.cgi?id=234816) is in review on bugs.freebsd.org.
+
+This Python module does not ship with a CLI tool. The project an installation instructions can be foun on [bsdci/ioc](https://github.com/bsdci/ioc).
 
 ## Documentation
 
