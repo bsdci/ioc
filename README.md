@@ -34,6 +34,7 @@ This Python module does not ship with a CLI tool. The project an installation in
 
 - ioc Handbook: https://bsdci.github.io/handbook
 - libioc Reference Documentation: https://bsdci.github.io/libioc
+- Gitter Chat: https://gitter.im/libioc/community
 
 ## Configuration
 
