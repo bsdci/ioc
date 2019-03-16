@@ -131,21 +131,24 @@ def cli_add(
 
     try:
         source = libioc.Types.AbsolutePath(source)
-        if os.path.exists(source) is False:
-            ctx.parent.logger.error(
-                f"The mount source {source} is does not exist"
-            )
-            exit(1)
-
-        if os.path.isdir(source) is False:
-            ctx.parent.logger.error(
-                f"The mount source {source} is not a directory"
-            )
-            exit(1)
-        ctx.parent.logger.spam("mount source is an absolute path that exists")
     except:
         ctx.parent.logger.spam("mount source is not an absolute path")
 
+    if os.path.exists(source) is False:
+        ctx.parent.logger.error(
+            f"The mount source {source} is does not exist"
+        )
+        exit(1)
+        return
+    if os.path.isdir(source) is False:
+        ctx.parent.logger.error(
+            f"The mount source {source} is not a directory"
+        )
+        exit(1)
+        return
+    ctx.parent.logger.spam(
+        f"mount source {source} is an absolute path that exists"
+    )
 
     try:
         desination_path = _get_abspath(desination_path, ioc_jail)
