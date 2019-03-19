@@ -94,7 +94,10 @@ def cli(
         exit(1)
 
     if _prop:
-        value = lookup_method(source_resource, _prop)
+        try:
+            value = lookup_method(source_resource, _prop)
+        except libioc.errors.IocException:
+            exit(1)
 
         if value:
             print(value)
