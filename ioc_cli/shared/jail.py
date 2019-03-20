@@ -53,15 +53,14 @@ def set_properties(
     autosave: bool=True
 ) -> set:
     """Set a bunch of jail properties from a Click option tuple."""
+    new_data = dict()
     updated_properties = set()
 
     for prop in properties:
 
         if _is_setter_property(prop):
             key, value = prop.split("=", maxsplit=1)
-            changed = target.config.set(key, value)
-            if changed:
-                updated_properties.add(key)
+            new_data[key] = value
         else:
             key = prop
             try:
@@ -69,6 +68,8 @@ def set_properties(
                 updated_properties.add(key)
             except (libioc.errors.IocException, KeyError):
                 pass
+
+    updated_properties |= target.config.set_dict(new_data)
 
     if (len(updated_properties) > 0) and (autosave is True):
         target.save()
