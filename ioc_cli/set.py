@@ -76,7 +76,8 @@ def cli(
     ioc_jails = libioc.Jails.JailsGenerator(
         filters,
         host=host,
-        logger=logger
+        logger=logger,
+        skip_invalid_config=True
     )
 
     updated_jail_count = 0

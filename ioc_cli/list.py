@@ -118,6 +118,8 @@ def cli(
 
         else:
 
+            resource_kwargs = dict()
+
             if (dataset_type == "base"):
                 resources_class = libioc.Releases.ReleasesGenerator
                 columns = ["full_name"]
@@ -130,6 +132,7 @@ def cli(
                     in host.datasets.items()
                 ]
             else:
+                resource_kwargs["skip_invalid_config"] = True
                 resources_class = libioc.Jails.JailsGenerator
                 columns = _list_output_comumns(output, _long)
                 if dataset_type == "template":
@@ -143,7 +146,8 @@ def cli(
                     host=host,
                     zfs=ctx.parent.zfs,
                     # ToDo: allow quoted whitespaces from user inputs
-                    filters=filters
+                    filters=filters,
+                    **resource_kwargs
                 )
 
     except libioc.errors.IocException:

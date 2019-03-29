@@ -81,7 +81,8 @@ def cli(
             source_resource = libioc.Jail.Jail(
                 jail,
                 host=host,
-                logger=logger
+                logger=logger,
+                skip_invalid_config=True
             )
         except libioc.errors.JailNotFound:
             exit(1)
