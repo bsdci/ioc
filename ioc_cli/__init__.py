@@ -151,25 +151,18 @@ class IOCageCLI(click.MultiCommand):
 
     def get_command(self, ctx, name):
         ctx.print_events = print_events
-        try:
-            mod = __import__(f"ioc_cli.{name}", None, None, ["ioc"])
+        mod = __import__(f"ioc_cli.{name}", None, None, ["ioc"])
 
-            try:
-                if mod.__rootcmd__ and "--help" not in sys.argv[1:]:
-                    if len(sys.argv) != 1:
-                        if os.geteuid() != 0:
-                            app_name = mod.__name__.rsplit(".")[-1]
-                            logger.error(
-                                "You need to have root privileges"
-                                f" to run {app_name}"
-                            )
-                            exit(1)
-            except AttributeError:
-                # It's not a root required command.
-                pass
-            return mod.cli
-        except (ImportError, AttributeError):
-            return
+        if mod.__rootcmd__ and "--help" not in sys.argv[1:]:
+            if len(sys.argv) != 1:
+                if os.geteuid() != 0:
+                    app_name = mod.__name__.rsplit(".")[-1]
+                    logger.error(
+                        "You need to have root privileges"
+                        f" to run {app_name}"
+                    )
+                    exit(1)
+        return mod.cli
 
 
 @click.option(
