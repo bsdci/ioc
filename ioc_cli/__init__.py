@@ -153,7 +153,8 @@ class IOCageCLI(click.MultiCommand):
         ctx.print_events = print_events
         mod = __import__(f"ioc_cli.{name}", None, None, ["ioc"])
 
-        if mod.__rootcmd__ and "--help" not in sys.argv[1:]:
+        is_root_cmd = ("__rootcmd__" in dir(mod)) and (mod.__rootcmd__ is True)
+        if is_root_cmd and "--help" not in sys.argv[1:]:
             if len(sys.argv) != 1:
                 if os.geteuid() != 0:
                     app_name = mod.__name__.rsplit(".")[-1]
