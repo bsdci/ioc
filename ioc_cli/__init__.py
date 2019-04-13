@@ -32,8 +32,8 @@ import sys
 
 import click
 
-from libioc.Logger import Logger
-from libioc.events import IocEvent
+import libioc.Logger
+import libioc.events
 from libioc.errors import (
     InvalidLogLevel,
     IocageNotActivated,
@@ -43,7 +43,7 @@ from libioc.ZFS import get_zfs
 from libioc.Datasets import Datasets
 from libioc.Host import HostGenerator
 
-logger = Logger()
+logger = libioc.Logger.Logger()
 
 click.core._verify_python3_env = lambda: None  # type: ignore
 user_locale = os.environ.get("LANG", "en_US.UTF-8")
@@ -80,7 +80,11 @@ def set_to_dict(data: typing.Set[str]) -> typing.Dict[str, str]:
 
 
 def print_events(
-    generator: typing.Generator[typing.Union[IocEvent, bool], None, None]
+    generator: typing.Generator[
+        typing.Union[libioc.events.IocEvent, bool],
+        None,
+        None
+    ]
 ) -> typing.Optional[bool]:
 
     lines: typing.Dict[str, str] = {}
@@ -171,7 +175,7 @@ class IOCageCLI(click.MultiCommand):
     "-d",
     default=None,
     help=(
-        f"Set the CLI log level {Logger.LOG_LEVELS}"
+        f"Set the CLI log level {libioc.Logger.Logger.LOG_LEVELS}"
     )
 )
 @click.option(
@@ -181,7 +185,14 @@ class IOCageCLI(click.MultiCommand):
     help="Globally override the activated iocage dataset(s)"
 )
 @click.command(cls=IOCageCLI)
-@click.version_option(version="0.8.0 2019/04/14", prog_name="ioc")
+@click.version_option(
+    version="0.8.0 2019/04/14",
+    prog_name="ioc",
+    message="\n".join((
+        "%(prog)s, version %(version)s",
+        f"libioc, version {libioc._get_version()}"
+    ))
+)
 @click.pass_context
 def cli(ctx, log_level: str, source: set) -> None:
     """A jail manager."""
