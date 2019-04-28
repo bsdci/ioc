@@ -153,14 +153,17 @@ def cli(
     except libioc.errors.IocException:
         exit(1)
 
-    if output_format == "list":
-        _print_list(resources, columns, header, "\t")
-    elif output_format == "csv":
-        _print_list(resources, columns, header, ";")
-    elif output_format == "json":
-        _print_json(resources, columns)
-    else:
-        _print_table(resources, columns, header, _sort)
+    try:
+        if output_format == "list":
+            _print_list(resources, columns, header, "\t")
+        elif output_format == "csv":
+            _print_list(resources, columns, header, ";")
+        elif output_format == "json":
+            _print_json(resources, columns)
+        else:
+            _print_table(resources, columns, header, _sort)
+    except libioc.errors.IocException:
+        exit(1)
 
 
 def _print_table(
