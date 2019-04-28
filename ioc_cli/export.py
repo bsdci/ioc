@@ -39,7 +39,7 @@ from .shared.click import IocClickContext
 __rootcmd__ = True
 
 
-@click.command(name="export", help="Export a jail to a backup archive")
+@click.command(name="export", help="Export a jail to a backup destination")
 @click.pass_context
 @click.argument("jail", required=True)
 @click.argument("destination", required=True)
@@ -48,6 +48,13 @@ __rootcmd__ = True
     default=False,
     is_flag=True,
     help="Exports the jails root dataset independently"
+)
+@click.option(
+    "--format",
+    "_format",
+    default="txz",
+    type=click.Choice(["txz", "directory"]),
+    help="Export the jail to a Tar Archive (compressed) or a new directory."
 )
 # @click.option(
 #     "-r", "--recursive",
@@ -59,7 +66,8 @@ def cli(
     ctx: IocClickContext,
     jail: str,
     destination: str,
-    standalone: bool
+    standalone: bool,
+    _format: str
 ) -> None:
     """
     Backup a jail.
@@ -90,7 +98,8 @@ def cli(
         print_events(ioc_jail.backup.export(
             destination,
             standalone=standalone,
-            recursive=recursive
+            recursive=recursive,
+            backup_format=_format
         ))
     except libioc.errors.IocException:
         exit(1)
