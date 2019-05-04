@@ -122,6 +122,6 @@ def _execute_provisioner(
 ) -> typing.Generator['libioc.events.IocEvent', None, None]:
     for event in jail.provisioner.provision():
         yield event
-        if isinstance(event, libioc.events.JailCommandExecution):
+        if isinstance(event, libioc.events.JailCommand):
             if event.done is True:
                 print(event.stdout)
