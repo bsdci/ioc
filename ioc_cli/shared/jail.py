@@ -34,14 +34,16 @@ from .click import IocClickContext
 
 def get_jail(
     jail_name: str,
-    ctx: IocClickContext
+    ctx: IocClickContext,
+    **jail_args: typing.Any
 ) -> libioc.Jail.JailGenerator:
     """Return the jail matching the given name."""
     try:
         return libioc.Jail.JailGenerator(
             jail_name,
             logger=ctx.logger,
-            host=ctx.host
+            host=ctx.host,
+            **jail_args
         )
     except libioc.errors.IocException:
         exit(1)

@@ -62,12 +62,15 @@ def cli(
         exit(1)
 
     filters = jails + ("template=no,-",)
-    ioc_jails = libioc.Jails.JailsGenerator(
-        logger=logger,
-        host=ctx.parent.host,
-        zfs=ctx.parent.zfs,
-        filters=filters
-    )
+    try:
+        ioc_jails = libioc.Jails.JailsGenerator(
+            logger=logger,
+            host=ctx.parent.host,
+            zfs=ctx.parent.zfs,
+            filters=filters
+        )
+    except libioc.errors.IocException:
+        exit(1)
 
     changed_jails = []
     failed_jails = []

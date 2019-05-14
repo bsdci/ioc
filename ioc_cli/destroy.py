@@ -94,12 +94,16 @@ def cli(
     else:
         resources_class = libioc.Jails.JailsGenerator
 
-    resources = list(resources_class(
-        filters=filters,
-        zfs=ctx.parent.zfs,
-        host=ctx.parent.host,
-        logger=logger
-    ))
+    try:
+        resources = list(resources_class(
+            filters=filters,
+            zfs=ctx.parent.zfs,
+            host=ctx.parent.host,
+            logger=logger,
+            skip_invalid_config=True
+        ))
+    except libioc.errors.IocException:
+        exit(1)
 
     if len(resources) == 0:
         logger.error("No target matched your input")

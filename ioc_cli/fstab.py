@@ -122,7 +122,7 @@ def cli_add(
     comment: typing.Optional[str]
 ) -> None:
     """Add lines to a jails fstab file."""
-    ioc_jail = get_jail(jail, ctx.parent)
+    ioc_jail = get_jail(jail, ctx.parent, skip_invalid_config=True)
 
     if len(destination) == 0:
         desination_path = source

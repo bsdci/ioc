@@ -71,12 +71,15 @@ def cli(
         logger.error("No jail selector provided")
         exit(1)
 
-    ioc_jails = libioc.Jails.JailsGenerator(
-        host=ctx.parent.host,
-        zfs=ctx.parent.zfs,
-        logger=logger,
-        filters=jails
-    )
+    try:
+        ioc_jails = libioc.Jails.JailsGenerator(
+            host=ctx.parent.host,
+            zfs=ctx.parent.zfs,
+            logger=logger,
+            filters=jails
+        )
+    except libioc.errors.IocException:
+        exit(1)
 
     changed_jails = []
     failed_jails = []

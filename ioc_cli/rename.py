@@ -50,7 +50,8 @@ def cli(
             jail,
             logger=logger,
             zfs=ctx.parent.zfs,
-            host=ctx.parent.host
+            host=ctx.parent.host,
+            skip_invalid_config=True
         )
         print_function(ioc_jail.rename(name))
     except libioc.errors.IocException:

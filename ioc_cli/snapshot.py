@@ -213,4 +213,4 @@ def _parse_identifier(
             )
         jail = identifier
 
-    return get_jail(jail, ctx), snapshot_name
+    return get_jail(jail, ctx, skip_invalid_config=True), snapshot_name
