@@ -71,14 +71,17 @@ def cli(
             logger.screen("Defaults unchanged")
         return
 
-    # Jail Properties
     filters = (f"name={jail}",)
-    ioc_jails = libioc.Jails.JailsGenerator(
-        filters,
-        host=host,
-        logger=logger,
-        skip_invalid_config=True
-    )
+
+    try:
+        ioc_jails = libioc.Jails.JailsGenerator(
+            filters,
+            host=host,
+            logger=logger,
+            skip_invalid_config=True
+        )
+    except libioc.errors.IocException:
+        exit(1)
 
     updated_jail_count = 0
 

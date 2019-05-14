@@ -99,13 +99,16 @@ def _normal(
 
     filters += ("template=no,-",)
 
-    jails = libioc.Jails.JailsGenerator(
-        zfs=zfs,
-        host=host,
-        logger=logger,
-        filters=filters,
-        skip_invalid_config=True
-    )
+    try:
+        jails = libioc.Jails.JailsGenerator(
+            zfs=zfs,
+            host=host,
+            logger=logger,
+            filters=filters,
+            skip_invalid_config=True
+        )
+    except libioc.errors.IocException:
+        exit(1)
 
     changed_jails = []
     failed_jails = []
@@ -143,13 +146,16 @@ def _autostop(
 
     filters = ("running=yes", "template=no,-",)
 
-    ioc_jails = libioc.Jails.Jails(
-        host=host,
-        zfs=zfs,
-        logger=logger,
-        filters=filters,
-        skip_invalid_config=True
-    )
+    try:
+        ioc_jails = libioc.Jails.Jails(
+            host=host,
+            zfs=zfs,
+            logger=logger,
+            filters=filters,
+            skip_invalid_config=True
+        )
+    except libioc.errors.IocException:
+        exit(1)
 
     # sort jails by their priority
     jails = reversed(sorted(
