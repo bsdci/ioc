@@ -103,7 +103,8 @@ def _normal(
         zfs=zfs,
         host=host,
         logger=logger,
-        filters=filters
+        filters=filters,
+        skip_invalid_config=True
     )
 
     changed_jails = []
@@ -146,7 +147,8 @@ def _autostop(
         host=host,
         zfs=zfs,
         logger=logger,
-        filters=filters
+        filters=filters,
+        skip_invalid_config=True
     )
 
     # sort jails by their priority
