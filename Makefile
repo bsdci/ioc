@@ -6,8 +6,9 @@ install-libioc:
 	git submodule init
 	git submodule update
 	make -C .libioc/ install
-install-ioc: deps
+install-ioc: deps install-service
 	python3.6 -m pip install -U .
+install-service:
 	@if [ -f /usr/local/etc/init.d ]; then \
 		install -m 0755 rc.d/ioc /usr/local/etc/init.d; \
 	else \
