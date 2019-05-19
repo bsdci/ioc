@@ -186,7 +186,7 @@ class IOCageCLI(click.MultiCommand):
 )
 @click.command(cls=IOCageCLI)
 @click.version_option(
-    version="0.8.0 2019/04/14",
+    version="0.8.1 2019/05/19",
     prog_name="ioc",
     message="\n".join((
         "%(prog)s, version %(version)s",
