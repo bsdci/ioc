@@ -82,7 +82,7 @@ if sys.version_info < (3, 6):
 setup(
     name='ioc_cli',
     license='BSD',
-    version='0.8.1',
+    version='0.8.2',
     description='A Python library to manage jails with iocage',
     keywords='FreeBSD jail iocage ioc',
     author='ioc Contributors',
