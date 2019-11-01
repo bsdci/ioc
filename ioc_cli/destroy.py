@@ -91,8 +91,10 @@ def cli(
     ]
     if release is True:
         resources_class = libioc.Releases.ReleasesGenerator
+        resource_arguments = dict()
     else:
         resources_class = libioc.Jails.JailsGenerator
+        resource_arguments = dict(skip_invalid_config=True)
 
     try:
         resources = list(resources_class(
@@ -100,7 +102,7 @@ def cli(
             zfs=ctx.parent.zfs,
             host=ctx.parent.host,
             logger=logger,
-            skip_invalid_config=True
+            **resource_arguments
         ))
     except libioc.errors.IocException:
         exit(1)
