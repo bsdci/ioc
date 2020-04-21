@@ -1,13 +1,22 @@
+PYTHON_VERSION ?= $(TRAVIS_PYTHON_VERSION)
+SELECTED_PYTHON_VERSION != if [ "$(PYTHON_VERSION)" != "" ]; then echo $(PYTHON_VERSION); else pkg info -g 'python3*' | cut -d'-' -f1 | sed 's/^python//' | sort -n | tail -n1 | sed -r 's/^([0-9])([0-9]+)/\1.\2/'; fi
+PYTHON ?= python${SELECTED_PYTHON_VERSION}
+# turn python3.7 -> 3.7 -> 37
+pyver= ${PYTHON:S/^python//:S/.//:C/\([0-9]+\)/\1/}
+
+.if $(pyver) < 35
+. error "ioc cannot run with a Python version < 3.5"
+.endif
+
 deps:
-	# pkg install -q -y py36-ioc
-	python3.6 -m ensurepip
-	python3.6 -m pip install -Ur requirements.txt
+	$(PYTHON) -m ensurepip
+	$(PYTHON) -m pip install -Ur requirements.txt
 install-libioc:
 	git submodule init
 	git submodule update
 	make -C .libioc/ install
 install-ioc: deps install-service
-	python3.6 -m pip install -U .
+	$(PYTHON) -m pip install -U .
 install-service:
 	@if [ -f /usr/local/etc/init.d ]; then \
 		install -m 0755 rc.d/ioc /usr/local/etc/init.d; \
@@ -17,17 +26,17 @@ install-service:
 install: install-libioc install-ioc
 install-dev: deps
 	if [ "`uname`" = "FreeBSD" ]; then pkg install -y gmake; fi
-	python3.6 -m pip install -Ur requirements-dev.txt
-	python3.6 -m pip install -e .
+	$(PYTHON) -m pip install -Ur requirements-dev.txt
+	$(PYTHON) -m pip install -e .
 	@if [ -f /usr/local/etc/init.d ]; then \
 		install -m 0755 -o root -g wheel rc.d/ioc /usr/local/etc/init.d; \
 	else \
 		install -m 0755 -o root -g wheel rc.d/ioc /usr/local/etc/rc.d; \
 	fi
 install-travis:
-	python3.6 -m pip install -U -r requirements-dev.txt
+	$(PYTHON) -m pip install -U -r requirements-dev.txt
 uninstall:
-	python3.6 -m pip uninstall -y ioc_cli
+	$(PYTHON) -m pip uninstall -y ioc_cli
 	@if [ -f /usr/local/etc/rc.d/ioc ]; then \
 		rm /usr/local/etc/rc.d/ioc; \
 	fi
