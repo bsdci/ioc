@@ -33,20 +33,19 @@ except ModuleNotFoundError:
     from pip.req import parse_requirements
 
 
+def _resolve_requirement(req: typing.Any) -> str:
+    if req.__class__.__name__ == "ParsedRequirement":
+        return str(req.requirement)
+    else:
+        return f"{req.name}{req.specifier}"
+
+
 def _read_requirements(
     filename: str="requirements.txt"
-) -> typing.Dict[str, typing.List[str]]:
+) -> typing.List[str]:
     reqs = list(parse_requirements(filename, session="ioc_cli"))
-    return dict(
-        install_requires=list(map(lambda x: f"{x.name}{x.specifier}", reqs)),
-        dependency_links=list(map(
-            lambda x: str(x.link),
-            filter(lambda x: x.link, reqs)
-        ))
-    )
+    return [_resolve_requirement(req) for req in reqs]
 
-
-cli_requirements = _read_requirements("requirements.txt")
 
 TEMPLATE = '''\
 # -*- coding: utf-8 -*-
@@ -91,8 +90,7 @@ setup(
     python_requires='>=3.6',
     packages=find_packages(include=["ioc_cli", "ioc_cli.*"]),
     include_package_data=True,
-    install_requires=cli_requirements["install_requires"],
-    dependency_links=cli_requirements["dependency_links"],
+    install_requires=_read_requirements("requirements.txt"),
     entry_points={
         'console_scripts': [
             'ioc=ioc_cli:cli'
